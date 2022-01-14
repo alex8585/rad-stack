@@ -35,7 +35,8 @@ class PostQuery extends BaseQuery
             ])
             ->allowedSorts(['id', 'title', 'published_at', 'created_at', 'updated_at'])
             ->with('category', 'media', 'tags', 'user')
-            ->orderByDesc('id');
+            ->orderByDesc('id')
+        ;
 
         $this->export = new PostExport($this->query);
         $this->resource = 'posts';

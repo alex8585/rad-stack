@@ -8,6 +8,7 @@ function admin_vite($path = '/dist/admin/assets')
         $parts = pathinfo($file);
         $ext = $parts['extension'];
         $url = url("{$path}/{$file}");
+
         if ('js' == $ext) {
             echo "<script type='module' crossorigin src='{$url}'></script>\n";
         } elseif ('css' == $ext) {
