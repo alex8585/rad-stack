@@ -1,12 +1,30 @@
 <template>
   <app-layout>
-    <button @click="clicked">BTN</button>
+    <el-table :data="items" style="width: 100%">
+      <el-table-column prop="id" label="ID" />
+      <el-table-column prop="title" label="Title" />
+      <el-table-column prop="description" label="Description" />
 
-    <ul id="example-1">
-      <li v-for="item in items" :key="item.id">
-        {{ item.title }}
-      </li>
-    </ul>
+      <el-table-column label="Operations" width="120">
+        <template #default>
+          <el-button type="text" size="small" @click="handleClick"
+            >Detail</el-button
+          >
+          <el-button type="text" size="small">Edit</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
+      v-model:currentPage="form.page"
+      v-model:page-size="form.perPage"
+      :page-sizes="[5, 10, 15, 20]"
+      layout="total, sizes, prev, pager, next"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </app-layout>
 </template>
 
@@ -15,6 +33,8 @@
   import { PaginatedData, User } from '@admin/types'
   import { Column } from '@admin/types/data-table'
   import { onMounted } from 'vue'
+  import { ref } from 'vue'
+  import { useForm } from '@inertiajs/inertia-vue3'
   let props = defineProps({
     action: String,
     items: {
@@ -24,71 +44,91 @@
     user: Object as PropType<User>,
     sort: String,
     filter: Object,
+    perPage: Number,
+    total: Number,
+    currentPage: Number,
   })
 
+  const handleClick = () => {
+    console.log('click')
+  }
   /* const test = computed(() => { */
   /*     console.log(props.action); */
   /*   return "action" */
   /* }) */
 
   onMounted(() => {
-    console.log(props.items)
+    /* currentPage = props.currentPage */
+    console.log(location)
+    console.log(props.total)
+    console.log(props.currentPage)
+    console.log(props.perPage)
   })
+
+  const form = useForm({
+    page: parseInt(props.currentPage),
+    perPage: parseInt(props.perPage),
+    sort: props.sort,
+    filter: {},
+  })
+
+  const doQuery = () => {
+    form.get(location.pathname, {
+      preserveState: true,
+    })
+  }
+
+  function handleSizeChange(newPerPage: number) {
+    form.page = 1
+    doQuery()
+  }
+
+  function handleCurrentChange(newPage: number) {
+    /* form.page = newPage */
+    doQuery()
+  }
 
   function clicked() {
     console.log(props.action)
   }
-
-  const columns: (string | Column)[] = [
+  const tableData = [
     {
-      field: 'id',
-      width: 40,
-      numeric: true,
-      sortable: true,
+      date: '2016-05-03',
+      name: 'Tom',
+      state: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+      zip: 'CA 90036',
+      tag: 'Home',
     },
     {
-      field: 'name',
-      sortable: true,
-      searchable: true,
+      date: '2016-05-02',
+      name: 'Tom',
+      state: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+      zip: 'CA 90036',
+      tag: 'Office',
     },
     {
-      field: 'email',
-      searchable: true,
-      type: 'email',
+      date: '2016-05-04',
+      name: 'Tom',
+      state: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+      zip: 'CA 90036',
+      tag: 'Home',
     },
     {
-      field: 'active',
-      type: 'switch',
-      searchable: true,
+      date: '2016-05-01',
+      name: 'Tom',
+      state: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+      zip: 'CA 90036',
+      tag: 'Office',
     },
-    {
-      field: 'role',
-      type: 'select',
-      props: { choices: 'roles' },
-      searchable: true,
-    },
-    {
-      field: 'last_login_at',
-      type: 'date',
-      props: { format: 'dd/MM/yyyy HH:mm:ss' },
-      sortable: true,
-      centered: true,
-    },
-    {
-      field: 'created_at',
-      type: 'date',
-      sortable: true,
-      centered: true,
-    },
-    {
-      field: 'updated_at',
-      type: 'date',
-      sortable: true,
-      centered: true,
-    },
-    'row-action',
   ]
-
   /* const canBeUpdated = (item) => { */
   /*   return (item as User).can_be_updated */
   /* } */

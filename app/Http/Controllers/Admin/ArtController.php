@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Queries\ArtQuery;
 use App\Http\Queries\UserQuery;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -24,16 +25,21 @@ use Spatie\RouteAttributes\Attributes\Put;
 class ArtController extends Controller
 {
     #[Get('/', name: 'arts')]
-    public function index()
+    public function index(ArtQuery $artQuery)
     {
-        $data = Art::paginate()->toArray();
-
-        return Inertia::render(
-            'arts/Index',
-            ['action' => 'list',
-                'items' => $data['data'],
-            ]
+        return $artQuery->paginateOrExport(
+            fn ($data) => Inertia::render('arts/Index', ['action' => 'list'] + $data)
         );
+
+        /* $data = Art::paginate(5)->toArray(); */
+
+        /* return Inertia::render( */
+        /*     'arts/Index', */
+        /*     [ */
+        /*         'action' => 'list', */
+        /*         'items' => $data['data'], */
+        /*     ] */
+        /* ); */
 
         /* return app(UserQuery::class)->make() */
         /*     ->paginateOrExport(fn ($data) => Inertia::render('users/Index', ['action' => 'list'] + $data)) */
