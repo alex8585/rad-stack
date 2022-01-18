@@ -11,6 +11,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ArtQuery extends BaseQuery
 {
+    protected int $perPage = 5;
+
     public function __construct()
     {
         $this->query = QueryBuilder::for(Art::class)

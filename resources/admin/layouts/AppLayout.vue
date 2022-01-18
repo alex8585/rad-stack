@@ -1,45 +1,100 @@
 <template>
-  <div class="h-screen md:flex md:flex-col bg-gray-100">
-    <div class="md:flex md:flex-shrink-0">
-      <div
-        class="hidden sm:flex bg-primary-900 md:flex-shrink-0 md:w-56 px-6 items-center justify-between md:justify-center"
-      >
-        <a href="/" target="_blank" class="mt-1">
-          <app-logo class="block h-9 w-auto fill-white" />
-        </a>
-      </div>
-      <navbar class="w-full" />
-    </div>
+  <q-layout view="lHh Lpr lFf" class="bg-white">
+    <q-header elevated>
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          aria-label="Menu"
+          icon="menu"
+          @click="toggleLeftDrawer"
+        />
 
-    <div class="md:flex md:flex-grow md:overflow-hidden">
-      <div
-        class="hidden md:block bg-primary-800 flex-shrink-0 w-56 px-8 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-900 scrollbar-track-gray-100"
-      >
-        <sidebar-nav />
-      </div>
-      <div
-        scroll-region
-        class="md:flex-1 md:overflow-y-auto scrollbar-thin scrollbar-thumb-primary-900 scrollbar-track-gray-100"
-        :class="{ 'hidden sm:block': !!$slots.aside }"
-      >
-        <!-- Page Heading -->
-        <header v-if="$slots.header" class="bg-white shadow">
-          <div class="py-6 px-4 sm:px-6 lg:px-8">
-            <slot name="header"></slot>
-          </div>
-        </header>
+        <q-toolbar-title> Quasar App </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
 
-        <flash-messages />
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
+      <q-list>
+        <q-item-label header>Admin Menu</q-item-label>
 
-        <!-- Page Content -->
-        <main class="px-4 py-8 md:p-8">
-          <slot></slot>
-        </main>
-      </div>
+        <div v-for="(link, i) in mainNav" :key="i" class="mb-4 group">
+          <!--  <inertia-link
+                        v-if="isLink(link)"
+                        class="flex items-center py-3"
+                        :href="link.href"
+                        :class="{ active: link.active() }"
+                    >
+                        <component :is="`${link.icon}-icon-solid`" class="w-5 h-5 mr-2" />
+                        {{ link.text }}
+                    </inertia-link> -->
 
-      <slot name="aside"></slot>
-    </div>
-  </div>
+          <inertia-link
+            v-if="isLink(link)"
+            class="flex items-center"
+            :href="link.href"
+            :class="{ active: link.active() }"
+          >
+            <q-item>
+              <q-item-section avatar>
+                <q-icon :name="`${link.newicon}`" />
+
+                <!-- <component :is="`${link.icon}-icon-solid`" class="w-5 h-5 mr-2" /> -->
+              </q-item-section>
+              <q-item-section>
+                {{ link.text }}
+              </q-item-section>
+            </q-item>
+          </inertia-link>
+
+          <h3
+            v-if="isTitle(link)"
+            class="text-primary-300 text-xs uppercase font-bold pt-4 pb-2 border-primary-300 border-b-1"
+          >
+            {{ link.title }}
+          </h3>
+        </div>
+      </q-list>
+    </q-drawer>
+
+    <q-page-container>
+      <main class="px-4 py-8 md:p-8">
+        <slot></slot>
+      </main>
+    </q-page-container>
+  </q-layout>
 </template>
 
-<script lang="ts" setup></script>
+<script>
+  import { ref } from 'vue'
+  import { mainNav, isTitle, isLink } from '@admin/_nav'
+  export default {
+    name: 'MyLayout',
+    setup() {
+      const leftDrawerOpen = ref(false)
+      function toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value
+      }
+      return {
+        leftDrawerOpen,
+        toggleLeftDrawer,
+        mainNav,
+        isTitle,
+        isLink,
+      }
+    },
+  }
+</script>
+
+<style lang="postcss" scoped>
+  a {
+    &:hover {
+      background-color: #dfdfdf !important;
+    }
+
+    &.active {
+      background-color: #dfdfdf !important;
+    }
+  }
+</style>

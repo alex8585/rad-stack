@@ -1,6 +1,13 @@
 <template>
   <app-layout>
-    <el-table :data="items" style="width: 100%">
+    <div class="q-pa-md">
+      <q-table title="Treats" :rows="items" :columns="columns" row-key="id" />
+    </div>
+
+    <!--    <el-table :data="items" style="width: 100%">
+
+
+
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="title" label="Title" />
       <el-table-column prop="description" label="Description" />
@@ -24,7 +31,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     >
-    </el-pagination>
+    </el-pagination> -->
   </app-layout>
 </template>
 
@@ -35,6 +42,7 @@
   import { onMounted } from 'vue'
   import { ref } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
+
   let props = defineProps({
     action: String,
     items: {
@@ -59,10 +67,10 @@
 
   onMounted(() => {
     /* currentPage = props.currentPage */
-    console.log(location)
-    console.log(props.total)
-    console.log(props.currentPage)
-    console.log(props.perPage)
+    /* console.log(location) */
+    /* console.log(props.total) */
+    /* console.log(props.currentPage) */
+    /* console.log(props.perPage) */
   })
 
   const form = useForm({
@@ -91,44 +99,32 @@
   function clicked() {
     console.log(props.action)
   }
-  const tableData = [
+
+  const columns = [
     {
-      date: '2016-05-03',
-      name: 'Tom',
-      state: 'California',
-      city: 'Los Angeles',
-      address: 'No. 189, Grove St, Los Angeles',
-      zip: 'CA 90036',
-      tag: 'Home',
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: (row) => row.id,
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
-      date: '2016-05-02',
-      name: 'Tom',
-      state: 'California',
-      city: 'Los Angeles',
-      address: 'No. 189, Grove St, Los Angeles',
-      zip: 'CA 90036',
-      tag: 'Office',
+      name: 'title',
+      align: 'center',
+      label: 'Title',
+      field: 'title',
+      sortable: true,
     },
     {
-      date: '2016-05-04',
-      name: 'Tom',
-      state: 'California',
-      city: 'Los Angeles',
-      address: 'No. 189, Grove St, Los Angeles',
-      zip: 'CA 90036',
-      tag: 'Home',
-    },
-    {
-      date: '2016-05-01',
-      name: 'Tom',
-      state: 'California',
-      city: 'Los Angeles',
-      address: 'No. 189, Grove St, Los Angeles',
-      zip: 'CA 90036',
-      tag: 'Office',
+      name: 'description',
+      label: 'Description',
+      field: 'description',
+      sortable: true,
     },
   ]
+
   /* const canBeUpdated = (item) => { */
   /*   return (item as User).can_be_updated */
   /* } */

@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import components from 'unplugin-vue-components/vite'
 import baseConfig from '../vite.config'
 import windicss from 'vite-plugin-windicss'
-
+import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 // https://vitejs.dev/config/
 export default defineConfig({
   ...baseConfig('admin'),
@@ -14,7 +14,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    vue({
+      template: { transformAssetUrls },
+    }),
+    quasar({}),
     components({
       dirs: ['base', 'components', 'layouts'],
       dts: true,

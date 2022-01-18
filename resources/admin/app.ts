@@ -13,8 +13,14 @@ import Translations from './plugins/translations'
 import GlobalComponents from './plugins/global-components'
 import DateFns from './plugins/date-fns'
 import HeroIcons from './plugins/hero-icons'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+import '@quasar/extras/material-icons-round/material-icons-round.css'
+// import '@quasar/extras/material-icons/material-icons.css'
+// import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
+// Import Quasar css
+import './material-icons/material-icons.css'
+import 'quasar/dist/quasar.css'
+
+import { Quasar } from 'quasar'
 createInertiaApp({
   resolve: (name) => {
     const pages = import.meta.globEager(`./pages/**/*`)
@@ -28,7 +34,9 @@ createInertiaApp({
       .use(Translations)
       .use(GlobalComponents)
       .use(DateFns)
-      .use(ElementPlus)
+      .use(Quasar, {
+        plugins: {}, // import Quasar plugins and add here
+      })
       .use(HeroIcons)
       .component('InertiaLink', Link)
       .mount(el)
