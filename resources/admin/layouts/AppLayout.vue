@@ -11,13 +11,64 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Admin panel </q-toolbar-title>
+        <div class="q-pa-md">
+          <q-btn-dropdown color="primary" label="Account">
+            <q-list>
+              <template #content>
+                <!-- Account Management -->
+                <div class="block px-4 py-2 text-xs text-gray-400">
+                  {{ $t('Manage Account') }}
+                </div>
+
+                <dropdown-link :href="route('admin.profile.show')" icon="user">
+                  {{ $t('Profile') }}
+                </dropdown-link>
+
+                <div class="border-t border-gray-100"></div>
+
+                <!-- Authentication -->
+                <dropdown-link
+                  v-if="$page.props.auth.is_impersonating"
+                  icon="lock-open"
+                  class="bg-yellow-300 hover:bg-yellow-500"
+                  @click="stopImpersonate"
+                >
+                  {{ $t('Stop impersonate') }}
+                </dropdown-link>
+
+                <!-- Authentication -->
+                <dropdown-link icon="logout" @click="logout">
+                  {{ $t('Log Out') }}
+                </dropdown-link>
+              </template>
+              <dropdown-link :href="route('admin.profile.show')" icon="user">
+                <q-item>
+                  <q-item-section>
+                    <q-item-label>
+                      {{ $t('Profile') }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </dropdown-link>
+              <dropdown-link icon="logout" @click="logout">
+                <q-item>
+                  <q-item-section>
+                    <q-item-label>
+                      {{ $t('Log Out') }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </dropdown-link>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
       <q-list>
-        <q-item-label header>Admin Menu</q-item-label>
+        <q-item-label header> Menu</q-item-label>
 
         <div v-for="(link, i) in mainNav" :key="i" class="mb-4 group">
           <!--  <inertia-link
@@ -69,6 +120,8 @@
 <script>
   import { ref } from 'vue'
   import { mainNav, isTitle, isLink } from '@admin/_nav'
+
+  import { Inertia } from '@inertiajs/inertia'
   export default {
     name: 'MyLayout',
     setup() {
@@ -76,12 +129,18 @@
       function toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
+
+      function logout() {
+        Inertia.post(route('logout'))
+      }
+
       return {
         leftDrawerOpen,
         toggleLeftDrawer,
         mainNav,
         isTitle,
         isLink,
+        logout,
       }
     },
   }
