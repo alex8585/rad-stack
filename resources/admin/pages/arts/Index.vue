@@ -1,106 +1,99 @@
 <template>
   <app-layout>
     <div class="q-pa-md">
-      <q-table title="Treats" :rows="items" :columns="columns" row-key="id" />
+      <q-table
+        v-model:pagination="pagination"
+        title="Treats"
+        :rows="items"
+        :columns="columns"
+        row-key="id"
+        hide-pagination
+        :loading="loading"
+        @request="onRequest"
+      />
+
+      <div class="q-pa-lg flex flex-center">
+        <q-pagination
+          v-model="pagination.page"
+          :max="pagesCount"
+          direction-links
+          boundary-links
+          :max-pages="5"
+          @update:model-value="onPagination"
+        />
+      </div>
     </div>
-
-    <!--    <el-table :data="items" style="width: 100%">
-
-
-
-      <el-table-column prop="id" label="ID" />
-      <el-table-column prop="title" label="Title" />
-      <el-table-column prop="description" label="Description" />
-
-      <el-table-column label="Operations" width="120">
-        <template #default>
-          <el-button type="text" size="small" @click="handleClick"
-            >Detail</el-button
-          >
-          <el-button type="text" size="small">Edit</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-pagination
-      v-model:currentPage="form.page"
-      v-model:page-size="form.perPage"
-      :page-sizes="[5, 10, 15, 20]"
-      layout="total, sizes, prev, pager, next"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    >
-    </el-pagination> -->
   </app-layout>
 </template>
 
 <script lang="ts" setup>
-  import { PropType } from 'vue'
-  import { PaginatedData, User } from '@admin/types'
-  import { Column } from '@admin/types/data-table'
-  import { onMounted } from 'vue'
+  import { Col } from '@admin/types/data-table'
   import { ref } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
 
   let props = defineProps({
     action: String,
-    items: {
-      type: Object as PropType<PaginatedData<User>>,
-      required: true,
-    },
-    user: Object as PropType<User>,
-    sort: String,
+    items: Array,
+    sortBy: String,
     filter: Object,
     perPage: Number,
     total: Number,
     currentPage: Number,
   })
 
-  const handleClick = () => {
-    console.log('click')
-  }
-  /* const test = computed(() => { */
-  /*     console.log(props.action); */
-  /*   return "action" */
-  /* }) */
-
-  onMounted(() => {
-    /* currentPage = props.currentPage */
-    /* console.log(location) */
-    /* console.log(props.total) */
-    /* console.log(props.currentPage) */
-    /* console.log(props.perPage) */
-  })
+  let totalCount = props.total!
+  let pageSize = props.perPage!
+  let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
   const form = useForm({
-    page: parseInt(props.currentPage),
-    perPage: parseInt(props.perPage),
-    sort: props.sort,
+    page: props.currentPage,
+    perPage: props.perPage,
+    sortBy: props.sortBy,
+    descending: 0,
     filter: {},
   })
 
+  const loading = ref(false)
+  const pagination = ref({
+    sortBy: 'id',
+    descending: false,
+    page: props.currentPage!,
+    rowsPerPage: props.perPage,
+    rowsNumber: props.total,
+  })
+
+  function onPagination(page: string) {
+    let curPage = parseInt(page)
+    pagination.value.page = curPage
+    form.page = curPage
+    doQuery()
+  }
+
+  function onRequest(params) {
+    const { sortBy } = params.pagination
+
+    pagination.value.descending = !pagination.value.descending
+
+    if (sortBy) {
+      pagination.value.sortBy = sortBy
+      form.sortBy = sortBy
+    }
+
+    form.descending = pagination.value.descending ? 1 : 0
+    doQuery()
+  }
+
   const doQuery = () => {
+    loading.value = true
     form.get(location.pathname, {
       preserveState: true,
+      onSuccess: () => {
+        loading.value = false
+      },
     })
   }
 
-  function handleSizeChange(newPerPage: number) {
-    form.page = 1
-    doQuery()
-  }
-
-  function handleCurrentChange(newPage: number) {
-    /* form.page = newPage */
-    doQuery()
-  }
-
-  function clicked() {
-    console.log(props.action)
-  }
-
-  const columns = [
+  const columns: Array<Col> = [
     {
       name: 'id',
       required: true,
@@ -112,24 +105,17 @@
     },
     {
       name: 'title',
-      align: 'center',
+      align: 'left',
       label: 'Title',
       field: 'title',
       sortable: true,
     },
     {
+      align: 'left',
       name: 'description',
       label: 'Description',
       field: 'description',
       sortable: true,
     },
   ]
-
-  /* const canBeUpdated = (item) => { */
-  /*   return (item as User).can_be_updated */
-  /* } */
-
-  /* const canBeImpersonated = (item) => { */
-  /*   return (item as User).can_be_impersonated */
-  /* } */
 </script>

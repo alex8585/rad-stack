@@ -11,3 +11,13 @@ export interface Column {
   props?: any
   filterType?: string
 }
+
+export interface Col {
+  name: string
+  align?: 'right' | 'left' | 'center' | undefined
+  required?: boolean
+  label: string
+  field: any
+  sortable: boolean
+  format?: any
+}

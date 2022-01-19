@@ -15,6 +15,9 @@ class ArtQuery extends BaseQuery
 
     public function __construct()
     {
+        $direction = request()->get('descending', 0) ? 'ASC' : 'DESC';
+        $sort = request()->get('sortBy', 'id');
+
         $this->query = QueryBuilder::for(Art::class)
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'email'])),
@@ -24,9 +27,8 @@ class ArtQuery extends BaseQuery
                 AllowedFilter::exact('role'),
                 AllowedFilter::exact('active'),
             ])
-            ->allowedSorts(['id', 'name', 'last_login_at', 'created_at', 'updated_at'])
+            ->orderBy($sort, $direction)
         ;
-
         $this->resource = 'arts';
     }
 
@@ -39,7 +41,7 @@ class ArtQuery extends BaseQuery
     {
         /* dd($this->collection()); */
         return [
-            'sort' => request()->get('sort', 'id'),
+            'sortBy' => request()->get('sort', 'id'),
             'filter' => request()->get('filter'),
             'items' => $this->collection()->items(),
             'perPage' => (int) $this->collection()->perPage(),
