@@ -5,18 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Queries\ArtQuery;
 use App\Http\Queries\UserQuery;
-use App\Http\Requests\Admin\UserStoreRequest;
-use App\Http\Requests\Admin\UserUpdateRequest;
+use App\Http\Requests\Admin\ArtStoreRequest;
+use App\Http\Requests\Admin\ArtUpdateRequest;
 use App\Http\Resources\Admin\UserResource;
-use App\Http\Responses\LoginResponse;
 use App\Models\Art;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
-use Spatie\RouteAttributes\Attributes\Patch;
 use Spatie\RouteAttributes\Attributes\Post;
 use Spatie\RouteAttributes\Attributes\Prefix;
 use Spatie\RouteAttributes\Attributes\Put;
@@ -46,14 +42,6 @@ class ArtController extends Controller
         /* ; */
     }
 
-    #[Get('create', name: 'users.create')]
-    public function create()
-    {
-        return Inertia::render('users/Index', [
-            'action' => 'create',
-        ] + app(UserQuery::class)->make()->get());
-    }
-
     #[Get('{user}', name: 'users.show')]
     public function show(User $user)
     {
@@ -63,85 +51,27 @@ class ArtController extends Controller
         ] + app(UserQuery::class)->make()->get());
     }
 
-    #[Get('{user}/edit', name: 'users.edit')]
-    public function edit(User $user)
-    {
-        return Inertia::render('users/Index', [
-            'action' => 'edit',
-            'user' => UserResource::make($user),
-        ] + app(UserQuery::class)->make()->get());
-    }
-
     #[Post('/', name: 'users.store')]
-    public function store(UserStoreRequest $request)
+    public function store(ArtStoreRequest $request)
     {
-        User::create($request->all());
+        Art::create($request->all());
 
-        return redirect()->route('admin.users')->with('flash.success', __('User created.'));
+        return back()->with('success', 'The art has been stored');
     }
 
-    #[Put('{user}', name: 'users.update', middleware: 'can:modify-user,user')]
-    public function update(User $user, UserUpdateRequest $request)
+    #[Put('{art}', name: 'arts.update') ]
+    public function update(Art $art, ArtUpdateRequest $request)
     {
-        $user->update($request->all());
+        $art->update($request->all());
 
-        return redirect()->route('admin.users')->with('flash.success', __('User updated.'));
+        return back()->with('success', 'The art has been updated');
     }
 
-    #[Patch('{user}/toggle', name: 'users.toggle', middleware: 'can:modify-user,user')]
-    public function toggle(User $user, Request $request)
+    #[Delete('{art}', name: 'arts.destroy') ]
+    public function destroy(Art $art)
     {
-        $request->validate([
-            'active' => 'sometimes|boolean',
-        ]);
+        $art->delete();
 
-        $user->update($request->only('active'));
-
-        return redirect()->route('admin.users')->with('flash.success', __('User updated.'));
-    }
-
-    #[Delete('{user}', name: 'users.destroy', middleware: 'can:modify-user,user')]
-    public function destroy(User $user)
-    {
-        $user->delete();
-
-        return redirect()->route('admin.users')->with('flash.success', __('User deleted.'));
-    }
-
-    #[Delete('/', name: 'users.bulk.destroy')]
-    public function bulkDestroy(Request $request)
-    {
-        $count = User::query()->findMany($request->input('ids'))
-            ->filter(fn (User $user) => Auth::user()->can('modify-user', $user))
-            ->each(fn (User $user) => $user->delete())
-            ->count()
-        ;
-
-        return redirect()->route('admin.users')->with('flash.success', __(':count users deleted.', ['count' => $count]));
-    }
-
-    #[Post('{user}/impersonate', name: 'users.impersonate')]
-    public function impersonate(User $user)
-    {
-        abort_unless(Auth::user()->canImpersonate($user), 403);
-
-        Auth::user()->setImpersonating($user->id);
-
-        session()->flash(
-            'flash.warning',
-            __('You are connected as :name, you can comeback to you own account from profile menu', [
-                'name' => $user->name,
-            ])
-        );
-
-        return app(LoginResponse::class)->setUser($user);
-    }
-
-    #[Post('stop-impersonate', name: 'users.stop-impersonate')]
-    public function stopImpersonate()
-    {
-        Auth::user()->stopImpersonating();
-
-        return redirect()->route('admin.dashboard')->with('flash.success', __('Welcome Back!'));
+        return back()->with('success', 'The art has been deleted');
     }
 }
