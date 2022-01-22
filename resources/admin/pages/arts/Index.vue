@@ -15,6 +15,12 @@
         :loading="loading"
         @request="onSort"
       >
+        <template #body-cell-thumb="props">
+          <q-td :props="props">
+            <img :src="props.row.thumb" />
+          </q-td>
+        </template>
+
         <template #body-cell-actions="props">
           <q-td :props="props">
             <q-btn
@@ -60,7 +66,7 @@
             class="float-right"
             color="grey-8"
           ></q-btn>
-          <div class="text-h6">Create Item</div>
+          <div class="text-h6">Create Art</div>
         </q-card-section>
         <q-separator inset></q-separator>
         <q-card-section class="q-pt-none">
@@ -68,21 +74,18 @@
             <q-list>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Currency Name</q-item-label>
+                  <q-item-label class="q-pb-xs">Title</q-item-label>
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Code</q-item-label>
-                  <q-input
-                    v-model="rowForm.description"
-                    type="textarea"
-                    filled
-                  />
-                </q-item-section>
-              </q-item>
+              <div>Description</div>
+              <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
+            <q-file v-model="rowForm.file" color="purple-12" label="Label">
+              <template #prepend>
+                <q-icon name="File" />
+              </template>
+            </q-file>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -111,7 +114,7 @@
             class="float-right"
             color="grey-8"
           ></q-btn>
-          <div class="text-h6">Update Item</div>
+          <div class="text-h6">Update Art</div>
         </q-card-section>
         <q-separator inset></q-separator>
         <q-card-section class="q-pt-none">
@@ -119,20 +122,12 @@
             <q-list>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Currency Name</q-item-label>
+                  <q-item-label class="q-pb-xs">Title</q-item-label>
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Code</q-item-label>
-                  <q-input
-                    v-model="rowForm.description"
-                    type="textarea"
-                    filled
-                  />
-                </q-item-section>
-              </q-item>
+              <div>Description</div>
+              <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
           </q-form>
         </q-card-section>
@@ -195,6 +190,13 @@
       format: (val) => shorten(val, 5),
       sortable: true,
     },
+    {
+      name: 'thumb',
+      sortable: false,
+      label: 'Img',
+      field: 'thumb',
+      align: 'center',
+    },
 
     {
       name: 'actions',
@@ -222,10 +224,12 @@
   })
 
   const initRowForm = {
+    file: null,
     title: null,
-    description: null,
+    description: '',
     id: null,
   }
+
   const rowForm = useForm(initRowForm)
 
   const showDialog = ref(false)
@@ -236,8 +240,20 @@
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
+  function stripHtml(html) {
+    let temporalDivElement = document.createElement('div')
+    temporalDivElement.innerHTML = html
+    return temporalDivElement.textContent || temporalDivElement.innerText || ''
+  }
+
+  function stripTags(str) {
+    return str.replace(/<\/?[^>]+(>|$)/g, '')
+  }
   function shorten(str, no_words, suff = ' ...') {
     let newStr = str.split(' ').splice(0, no_words).join(' ')
+    newStr = stripHtml(newStr)
+    newStr = stripTags(newStr)
+
     if (str.length > newStr.length) {
       newStr += suff
     }

@@ -54,7 +54,10 @@ class ArtController extends Controller
     #[Post('/', name: 'users.store')]
     public function store(ArtStoreRequest $request)
     {
-        Art::create($request->all());
+        /* dd($request); */
+        /* dd($request->all()); */
+        $art = Art::create($request->except(['file']));
+        $art->addMediaFromRequest('file')->toMediaCollection('images');
 
         return back()->with('success', 'The art has been stored');
     }
