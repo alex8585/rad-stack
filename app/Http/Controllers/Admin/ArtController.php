@@ -15,7 +15,6 @@ use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Post;
 use Spatie\RouteAttributes\Attributes\Prefix;
-use Spatie\RouteAttributes\Attributes\Put;
 
 #[Prefix('arts')]
 class ArtController extends Controller
@@ -55,17 +54,33 @@ class ArtController extends Controller
     public function store(ArtStoreRequest $request)
     {
         /* dd($request); */
-        /* dd($request->all()); */
-        $art = Art::create($request->except(['file']));
-        $art->addMediaFromRequest('file')->toMediaCollection('images');
+        /* dd($request->files->get('files')); */
+        $art = Art::create($request->except(['file', 'files']));
+
+        $files = $request->files->get('files');
+        if ($files) {
+            foreach ($files as $file) {
+                $art->addMedia($file)->toMediaCollection('images');
+            }
+        }
 
         return back()->with('success', 'The art has been stored');
     }
 
-    #[Put('{art}', name: 'arts.update') ]
+    #[Post('{art}', name: 'arts.update') ]
     public function update(Art $art, ArtUpdateRequest $request)
     {
-        $art->update($request->all());
+        $art->update($request->except(['file', 'files']));
+
+        $art->clearMediaCollection('images');
+
+        /* dd($request->files->get('files')); */
+        $files = $request->files->get('files');
+        if ($files) {
+            foreach ($files as $file) {
+                $art->addMedia($file)->toMediaCollection('images');
+            }
+        }
 
         return back()->with('success', 'The art has been updated');
     }

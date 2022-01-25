@@ -54,6 +54,7 @@
         />
       </div>
     </div>
+
     <q-dialog v-model="showCreateDialog">
       <q-card style="width: 600px; max-width: 60vw">
         <q-card-section>
@@ -81,21 +82,11 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <ul v-if="rowForm.files">
-              <li v-for="file in rowForm.files">
-                <img
-                  width="100"
-                  height="100"
-                  :src="imgUrlFromFile(file.file)"
-                /><br />
-              </li>
-            </ul>
-            <q-uploader
-              url="http://localhost:4444/upload"
-              label="Individual upload"
-              multiple
-              style="max-width: 300px"
-            />
+            <UploadInput
+              ref="uploadInputRef"
+              :init-files="[]"
+              @change="uploadInputChangeHandler"
+            ></UploadInput>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -112,7 +103,7 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="showEditDialog">
       <q-card style="width: 600px; max-width: 60vw">
         <q-card-section>
           <q-btn
@@ -139,6 +130,10 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
+            <UploadInput
+              :init-files="rowForm.files"
+              @change="uploadInputChangeHandler"
+            ></UploadInput>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -163,7 +158,6 @@
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
   const $q = useQuasar()
-
   let props = defineProps({
     action: String,
     items: Array,
@@ -234,22 +228,55 @@
   })
 
   const initRowForm = {
+    files: [],
     file: null,
     title: null,
     description: '',
     id: null,
   }
 
-  const rowForm = useForm(initRowForm)
+  const rowForm = useForm(initRowForm, {
+    key: 'art-firm',
+    remember: false,
+  })
 
-  const showDialog = ref(false)
+  const showEditDialog = ref(false)
   const showCreateDialog = ref(false)
   const loading = ref(false)
-
+  const uploadInput = ref(false)
+  const uploadEditInput = ref(false)
+  const uploadInputRef = ref(false)
   let totalCount = props.total!
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
+  function uploadInputChangeHandler(files) {
+    rowForm.files = files
+    /* console.log(rowForm.files) */
+  }
+  function inputFile(newFile, oldFile) {
+    if (newFile) {
+      /* rowForm.files.push(newFile) */
+    }
+
+    /* console.log(rowForm.files) */
+    if (newFile && oldFile && !newFile.active && oldFile.active) {
+      // Get response data
+      /* console.log('response', newFile.response) */
+      if (newFile.xhr) {
+        //  Get the response status code
+        /* console.log('status', newFile.xhr.status) */
+      }
+    }
+  }
+  function inputFilter(newFile, oldFile, prevent) {
+    if (newFile && !oldFile) {
+      // Filter non-image file
+      if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+        return prevent()
+      }
+    }
+  }
   function stripHtml(html) {
     let temporalDivElement = document.createElement('div')
     temporalDivElement.innerHTML = html
@@ -291,29 +318,62 @@
     doQuery()
   }
 
-  function editRow(params) {
-    let { row } = params
-    showDialog.value = true
-    rowForm.title = row.title
-    rowForm.description = row.description
-    rowForm.id = row.id
-    /* $q.notify({ */
-    /*      message: 'Jim pinged you.', */
-    /*      caption: '5 minutes ago', */
-    /*      color: 'secondary', */
-    /*      position: 'top', */
-    /* }) */
+  function handleImages(files) {
+    rowForm.files = files
+    /* console.log(files) */
   }
 
-  function updateRow() {
-    rowForm.put(`/admin/arts/${rowForm.id}`, {
-      preserveState: true,
-    })
+  function added(file) {
+    /* rowForm.files.push(file) */
+    /* console.log(file) */
+    /* console.log(rowForm.files) */
+    /* console.log(uploadEditInput.value.files) */
   }
 
   function createDialog() {
+    /* console.log(uploadInputRef.value) */
+    rowForm.files = []
     rowForm.reset()
+    /* console.log(rowForm) */
     showCreateDialog.value = true
+  }
+
+  async function editRow(params) {
+    let { row } = params
+    showEditDialog.value = true
+    rowForm.title = row.title
+    rowForm.description = row.description
+    rowForm.id = row.id
+    rowForm.files = []
+
+    for (const image of row.media) {
+      let response = await fetch(image.original_url)
+      let data = await response.blob()
+      /* console.log(image) */
+      let file = new File([data], image.name, {})
+      /* uploadInput.value.add(file) */
+      /* console.log(file) */
+      // uploadEditInput.value.addFiles(file)
+      rowForm.files.push(file)
+
+      // uploadEditInput.value.addFiles([file])
+    }
+
+    /* uploadEditInput.value.addFiles(rowForm.files) */
+    // console.log(rowForm.files)
+    /* console.log(row) */
+  }
+
+  function imgUrlFromFile(file) {
+    let urlCreator = window.URL || window.webkitURL
+    let imageUrl = urlCreator.createObjectURL(file)
+    return imageUrl
+  }
+  function updateRow() {
+    rowForm.post(`/admin/arts/${rowForm.id}`, {
+      preserveState: true,
+      onSuccess: () => rowForm.reset(),
+    })
   }
 
   function createRow() {
@@ -350,3 +410,8 @@
     })
   }
 </script>
+<style>
+  [for='file2'] {
+    cursor: pointer;
+  }
+</style>

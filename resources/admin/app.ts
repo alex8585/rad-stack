@@ -19,6 +19,10 @@ import '@quasar/extras/material-icons-round/material-icons-round.css'
 import './material-icons/material-icons.css'
 import 'quasar/dist/quasar.css'
 import { Quasar, Notify, Dialog } from 'quasar'
+import VueUploadComponent from 'vue-upload-component'
+import { UploadMedia, UpdateMedia } from '@s1modev/media-upload'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 createInertiaApp({
   resolve: (name) => {
@@ -33,6 +37,7 @@ createInertiaApp({
       .use(Translations)
       .use(GlobalComponents)
       .use(DateFns)
+      .use(VueAxios, axios)
       .use(Quasar, {
         plugins: {
           Notify,
@@ -41,6 +46,9 @@ createInertiaApp({
       })
       .use(HeroIcons)
       .component('InertiaLink', Link)
+      .component('upload-media', UploadMedia)
+      .component('update-media', UpdateMedia)
+      .component('file-upload', VueUploadComponent)
       .mount(el)
   },
 })

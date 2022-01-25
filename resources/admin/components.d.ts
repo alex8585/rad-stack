@@ -84,6 +84,8 @@ declare module 'vue' {
     TextInput: typeof import('./base/inputs/TextInput.vue')['default']
     UpdatePasswordForm: typeof import('./components/profile/UpdatePasswordForm.vue')['default']
     UpdateProfileInformationForm: typeof import('./components/profile/UpdateProfileInformationForm.vue')['default']
+    UploadField: typeof import('./base/inputs/UploadField.vue')['default']
+    UploadInput: typeof import('./base/inputs/UploadInput.vue')['default']
     UserForm: typeof import('./components/forms/UserForm.vue')['default']
     ValidationErrors: typeof import('./base/ValidationErrors.vue')['default']
   }
