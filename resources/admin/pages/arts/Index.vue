@@ -81,11 +81,21 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <q-file v-model="rowForm.file" color="purple-12" label="Label">
-              <template #prepend>
-                <q-icon name="File" />
-              </template>
-            </q-file>
+            <ul v-if="rowForm.files">
+              <li v-for="file in rowForm.files">
+                <img
+                  width="100"
+                  height="100"
+                  :src="imgUrlFromFile(file.file)"
+                /><br />
+              </li>
+            </ul>
+            <q-uploader
+              url="http://localhost:4444/upload"
+              label="Individual upload"
+              multiple
+              style="max-width: 300px"
+            />
           </q-form>
         </q-card-section>
         <q-card-section>
