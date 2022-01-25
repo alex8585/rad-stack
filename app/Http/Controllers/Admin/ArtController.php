@@ -55,9 +55,25 @@ class ArtController extends Controller
     public function store(ArtStoreRequest $request)
     {
         /* dd($request); */
-        /* dd($request->all()); */
-        $art = Art::create($request->except(['file']));
-        $art->addMediaFromRequest('file')->toMediaCollection('images');
+        /* dd($request->files->get('files')); */
+        $art = Art::create($request->except(['file', 'files']));
+
+        /* dd($request->files->get('files')); */
+
+        foreach ($request->files->get('files') as $fileArr) {
+            $file = $fileArr['file'];
+            $art->addMedia($file)->toMediaCollection('images');
+        }
+        /* $art->addMediaFromRequest($request->files)->toMediaCollection('images'); */
+
+        /* foreach($request->files as $filesArr) { */
+        /*     foreach($filesArr as $fileArr){ */
+        /*         /1* dd($fileArr); *1/ */
+        /*         $file = $fileArr['file']; */
+        /*         /1* dd($file); *1/ */
+        /*     $art->addMedia($file)->toMediaCollection('images'); */
+        /*     } */
+        /* } */
 
         return back()->with('success', 'The art has been stored');
     }

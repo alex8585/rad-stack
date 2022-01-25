@@ -54,6 +54,7 @@
         />
       </div>
     </div>
+
     <q-dialog v-model="showCreateDialog">
       <q-card style="width: 600px; max-width: 60vw">
         <q-card-section>
@@ -81,11 +82,38 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <q-file v-model="rowForm.file" color="purple-12" label="Label">
-              <template #prepend>
-                <q-icon name="File" />
-              </template>
-            </q-file>
+            <ul v-if="rowForm.files">
+              <li v-for="file in rowForm.files">
+                <img
+                  width="100"
+                  height="100"
+                  :src="imgUrlFromFile(file.file)"
+                /><br />
+              </li>
+            </ul>
+            <file-upload
+              ref="createUploadInput"
+              v-model="rowForm.files"
+              extensions="gif,jpg,jpeg,png,webp"
+              accept="image/png,image/gif,image/jpeg,image/webp"
+              :multiple="true"
+              :size="1024 * 1024 * 10"
+              input-id="file2"
+              @input-filter="inputFilter"
+              @input-file="inputFile"
+            >
+              <q-btn
+                style="cursor: pointer"
+                label="Select files"
+                color="primary"
+              ></q-btn>
+            </file-upload>
+            <q-uploader
+              url="http://localhost:4444/upload"
+              label="Individual upload"
+              multiple
+              style="max-width: 300px"
+            />
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -102,7 +130,7 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="showEditDialog">
       <q-card style="width: 600px; max-width: 60vw">
         <q-card-section>
           <q-btn
@@ -129,6 +157,30 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
+            <ul v-if="rowForm.files">
+              <li v-for="file in rowForm.files">
+                {{ file.name }} - Error: {{ file.error }}, Success:
+                {{ file.success }}
+              </li>
+            </ul>
+            <file-upload
+              ref="uploadInput"
+              v-model="rowForm.files"
+              extensions="gif,jpg,jpeg,png,webp"
+              accept="image/png,image/gif,image/jpeg,image/webp"
+              :multiple="true"
+              :size="1024 * 1024 * 10"
+              input-id="file2"
+              @input-filter="inputFilter"
+              @input-file="inputFile"
+            >
+              <q-btn
+                style="cursor: pointer"
+                label="Select files"
+                color="primary"
+              ></q-btn>
+            </file-upload>
+            <q-file v-model="rowForm.files" filled label="Filled" />
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -153,7 +205,6 @@
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
   const $q = useQuasar()
-
   let props = defineProps({
     action: String,
     items: Array,
@@ -224,6 +275,7 @@
   })
 
   const initRowForm = {
+    files: [],
     file: null,
     title: null,
     description: '',
@@ -232,14 +284,39 @@
 
   const rowForm = useForm(initRowForm)
 
-  const showDialog = ref(false)
+  const showEditDialog = ref(false)
   const showCreateDialog = ref(false)
   const loading = ref(false)
+  const uploadInput = ref(false)
+  const uploadEditInput = ref(false)
 
   let totalCount = props.total!
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
+  function inputFile(newFile, oldFile) {
+    if (newFile) {
+      /* rowForm.files.push(newFile) */
+    }
+
+    console.log(rowForm.files)
+    if (newFile && oldFile && !newFile.active && oldFile.active) {
+      // Get response data
+      console.log('response', newFile.response)
+      if (newFile.xhr) {
+        //  Get the response status code
+        console.log('status', newFile.xhr.status)
+      }
+    }
+  }
+  function inputFilter(newFile, oldFile, prevent) {
+    if (newFile && !oldFile) {
+      // Filter non-image file
+      if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+        return prevent()
+      }
+    }
+  }
   function stripHtml(html) {
     let temporalDivElement = document.createElement('div')
     temporalDivElement.innerHTML = html
@@ -281,20 +358,50 @@
     doQuery()
   }
 
-  function editRow(params) {
+  function handleImages(files) {
+    rowForm.files = files
+    console.log(files)
+  }
+
+  function added(file) {
+    console.log('aaaa')
+    /* rowForm.files.push(file) */
+    console.log(file)
+
+    console.log(rowForm.files)
+    console.log(uploadEditInput.value.files)
+  }
+  async function editRow(params) {
     let { row } = params
-    showDialog.value = true
+    showEditDialog.value = true
     rowForm.title = row.title
     rowForm.description = row.description
     rowForm.id = row.id
-    /* $q.notify({ */
-    /*      message: 'Jim pinged you.', */
-    /*      caption: '5 minutes ago', */
-    /*      color: 'secondary', */
-    /*      position: 'top', */
-    /* }) */
+    rowForm.files = []
+
+    for (const image of row.media) {
+      let response = await fetch(image.original_url)
+      let data = await response.blob()
+      console.log(image)
+      let file = new File([data], image.name, {})
+      /* uploadInput.value.add(file) */
+      console.log(file)
+      // uploadEditInput.value.addFiles(file)
+      rowForm.files.push(file)
+
+      // uploadEditInput.value.addFiles([file])
+    }
+
+    /* uploadEditInput.value.addFiles(rowForm.files) */
+    // console.log(rowForm.files)
+    /* console.log(row) */
   }
 
+  function imgUrlFromFile(file) {
+    let urlCreator = window.URL || window.webkitURL
+    let imageUrl = urlCreator.createObjectURL(file)
+    return imageUrl
+  }
   function updateRow() {
     rowForm.put(`/admin/arts/${rowForm.id}`, {
       preserveState: true,
@@ -340,3 +447,8 @@
     })
   }
 </script>
+<style>
+  [for='file2'] {
+    cursor: pointer;
+  }
+</style>
