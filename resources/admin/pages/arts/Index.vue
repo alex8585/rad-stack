@@ -82,38 +82,11 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <ul v-if="rowForm.files">
-              <li v-for="file in rowForm.files">
-                <img
-                  width="100"
-                  height="100"
-                  :src="imgUrlFromFile(file.file)"
-                /><br />
-              </li>
-            </ul>
-            <file-upload
-              ref="createUploadInput"
-              v-model="rowForm.files"
-              extensions="gif,jpg,jpeg,png,webp"
-              accept="image/png,image/gif,image/jpeg,image/webp"
-              :multiple="true"
-              :size="1024 * 1024 * 10"
-              input-id="file2"
-              @input-filter="inputFilter"
-              @input-file="inputFile"
-            >
-              <q-btn
-                style="cursor: pointer"
-                label="Select files"
-                color="primary"
-              ></q-btn>
-            </file-upload>
-            <q-uploader
-              url="http://localhost:4444/upload"
-              label="Individual upload"
-              multiple
-              style="max-width: 300px"
-            />
+            <UploadInput
+              ref="uploadInputRef"
+              :init-files="[]"
+              @change="uploadInputChangeHandler"
+            ></UploadInput>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -157,30 +130,10 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <ul v-if="rowForm.files">
-              <li v-for="file in rowForm.files">
-                {{ file.name }} - Error: {{ file.error }}, Success:
-                {{ file.success }}
-              </li>
-            </ul>
-            <file-upload
-              ref="uploadInput"
-              v-model="rowForm.files"
-              extensions="gif,jpg,jpeg,png,webp"
-              accept="image/png,image/gif,image/jpeg,image/webp"
-              :multiple="true"
-              :size="1024 * 1024 * 10"
-              input-id="file2"
-              @input-filter="inputFilter"
-              @input-file="inputFile"
-            >
-              <q-btn
-                style="cursor: pointer"
-                label="Select files"
-                color="primary"
-              ></q-btn>
-            </file-upload>
-            <q-file v-model="rowForm.files" filled label="Filled" />
+            <UploadInput
+              :init-files="rowForm.files"
+              @change="uploadInputChangeHandler"
+            ></UploadInput>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -289,11 +242,15 @@
   const loading = ref(false)
   const uploadInput = ref(false)
   const uploadEditInput = ref(false)
-
+  const uploadInputRef = ref(false)
   let totalCount = props.total!
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
+  function uploadInputChangeHandler(files) {
+    rowForm.files = files
+    /* console.log(rowForm.files) */
+  }
   function inputFile(newFile, oldFile) {
     if (newFile) {
       /* rowForm.files.push(newFile) */
@@ -364,13 +321,19 @@
   }
 
   function added(file) {
-    console.log('aaaa')
     /* rowForm.files.push(file) */
     console.log(file)
 
     console.log(rowForm.files)
     console.log(uploadEditInput.value.files)
   }
+
+  function createDialog() {
+    /* console.log(uploadInputRef.value) */
+    rowForm.reset()
+    showCreateDialog.value = true
+  }
+
   async function editRow(params) {
     let { row } = params
     showEditDialog.value = true
@@ -382,10 +345,10 @@
     for (const image of row.media) {
       let response = await fetch(image.original_url)
       let data = await response.blob()
-      console.log(image)
+      /* console.log(image) */
       let file = new File([data], image.name, {})
       /* uploadInput.value.add(file) */
-      console.log(file)
+      /* console.log(file) */
       // uploadEditInput.value.addFiles(file)
       rowForm.files.push(file)
 
@@ -403,14 +366,9 @@
     return imageUrl
   }
   function updateRow() {
-    rowForm.put(`/admin/arts/${rowForm.id}`, {
+    rowForm.post(`/admin/arts/${rowForm.id}`, {
       preserveState: true,
     })
-  }
-
-  function createDialog() {
-    rowForm.reset()
-    showCreateDialog.value = true
   }
 
   function createRow() {

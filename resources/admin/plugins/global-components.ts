@@ -7,6 +7,7 @@ import SelectField from '@admin/base/fields/SelectField.vue'
 import ReferenceField from '@admin/base/fields/ReferenceField.vue'
 import ImageField from '@admin/base/fields/ImageField.vue'
 import FileField from '@admin/base/fields/FileField.vue'
+import UploadInput from '@admin/base/inputs/UploadInput.vue'
 
 import TextFilter from '@admin/base/filters/TextFilter.vue'
 import SelectFilter from '@admin/base/filters/SelectFilter.vue'
@@ -29,6 +30,7 @@ export default {
     app.component('ReferenceField', ReferenceField)
     app.component('ImageField', ImageField)
     app.component('FileField', FileField)
+    app.component('UploadInput', UploadInput)
 
     app.component('TextFilter', TextFilter)
     app.component('SelectFilter', SelectFilter)
