@@ -83,8 +83,8 @@
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
             <UploadInput
-              ref="uploadInputRef"
-              :init-files="[]"
+              ref="createArtUploadInputRef"
+              @mount="createArtUploadMounHandler"
               @change="uploadInputChangeHandler"
             ></UploadInput>
           </q-form>
@@ -130,10 +130,13 @@
               <div>Description</div>
               <q-editor v-model="rowForm.description" min-height="5rem" />
             </q-list>
-            <UploadInput
-              :init-files="rowForm.files"
-              @change="uploadInputChangeHandler"
-            ></UploadInput>
+
+            <div v-if="showEditDialog">
+              <UploadInput
+                :init-files="rowForm.files"
+                @change="uploadInputChangeHandler"
+              ></UploadInput>
+            </div>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -151,13 +154,17 @@
     </q-dialog>
   </app-layout>
 </template>
+
 <script lang="ts" setup>
-  import { Col } from '@admin/types/data-table'
-  import { ref } from 'vue'
+  import { Col, ArtRowFormType } from '@admin/types/data-table'
+  import { shorten, imgUrlFromFile } from '@admin/functions'
+  import { ref, onMounted, watchEffect } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
+
   const $q = useQuasar()
+
   let props = defineProps({
     action: String,
     items: Array,
@@ -167,7 +174,6 @@
     total: Number,
     currentPage: Number,
   })
-
   const columns: Array<Col> = [
     {
       name: 'id',
@@ -227,115 +233,39 @@
     filter: {},
   })
 
-  const initRowForm = {
+  const initRowForm: ArtRowFormType = {
     files: [],
-    file: null,
     title: null,
     description: '',
     id: null,
   }
-
-  const rowForm = useForm(initRowForm, {
-    key: 'art-firm',
-    remember: false,
-  })
+  const rowForm = useForm(initRowForm)
 
   const showEditDialog = ref(false)
   const showCreateDialog = ref(false)
   const loading = ref(false)
-  const uploadInput = ref(false)
-  const uploadEditInput = ref(false)
-  const uploadInputRef = ref(false)
+  const uploadInputRef = ref(null)
+  const createArtUploadInputRef = ref(null)
+
+  /* watchEffect(() => { */
+  /*       }) */
+
   let totalCount = props.total!
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
   function uploadInputChangeHandler(files) {
     rowForm.files = files
-    /* console.log(rowForm.files) */
-  }
-  function inputFile(newFile, oldFile) {
-    if (newFile) {
-      /* rowForm.files.push(newFile) */
-    }
-
-    /* console.log(rowForm.files) */
-    if (newFile && oldFile && !newFile.active && oldFile.active) {
-      // Get response data
-      /* console.log('response', newFile.response) */
-      if (newFile.xhr) {
-        //  Get the response status code
-        /* console.log('status', newFile.xhr.status) */
-      }
-    }
-  }
-  function inputFilter(newFile, oldFile, prevent) {
-    if (newFile && !oldFile) {
-      // Filter non-image file
-      if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
-        return prevent()
-      }
-    }
-  }
-  function stripHtml(html) {
-    let temporalDivElement = document.createElement('div')
-    temporalDivElement.innerHTML = html
-    return temporalDivElement.textContent || temporalDivElement.innerText || ''
-  }
-
-  function stripTags(str) {
-    return str.replace(/<\/?[^>]+(>|$)/g, '')
-  }
-  function shorten(str, no_words, suff = ' ...') {
-    let newStr = str.split(' ').splice(0, no_words).join(' ')
-    newStr = stripHtml(newStr)
-    newStr = stripTags(newStr)
-
-    if (str.length > newStr.length) {
-      newStr += suff
-    }
-    return newStr
-  }
-
-  function onPagination(page: string) {
-    let curPage = parseInt(page)
-    pagination.value.page = curPage
-    form.page = curPage
-    doQuery()
-  }
-
-  function onSort(params) {
-    const { sortBy } = params.pagination
-
-    pagination.value.descending = !pagination.value.descending
-
-    if (sortBy) {
-      pagination.value.sortBy = sortBy
-      form.sortBy = sortBy
-    }
-
-    form.descending = pagination.value.descending ? 1 : 0
-    doQuery()
-  }
-
-  function handleImages(files) {
-    rowForm.files = files
-    /* console.log(files) */
-  }
-
-  function added(file) {
-    /* rowForm.files.push(file) */
-    /* console.log(file) */
-    /* console.log(rowForm.files) */
-    /* console.log(uploadEditInput.value.files) */
   }
 
   function createDialog() {
-    /* console.log(uploadInputRef.value) */
     rowForm.files = []
     rowForm.reset()
-    /* console.log(rowForm) */
     showCreateDialog.value = true
+  }
+
+  function createArtUploadMounHandler() {
+    /* createArtUploadInputRef.value.reset() */
   }
 
   async function editRow(params) {
@@ -349,26 +279,11 @@
     for (const image of row.media) {
       let response = await fetch(image.original_url)
       let data = await response.blob()
-      /* console.log(image) */
       let file = new File([data], image.name, {})
-      /* uploadInput.value.add(file) */
-      /* console.log(file) */
-      // uploadEditInput.value.addFiles(file)
       rowForm.files.push(file)
-
-      // uploadEditInput.value.addFiles([file])
     }
-
-    /* uploadEditInput.value.addFiles(rowForm.files) */
-    // console.log(rowForm.files)
-    /* console.log(row) */
   }
 
-  function imgUrlFromFile(file) {
-    let urlCreator = window.URL || window.webkitURL
-    let imageUrl = urlCreator.createObjectURL(file)
-    return imageUrl
-  }
   function updateRow() {
     rowForm.post(`/admin/arts/${rowForm.id}`, {
       preserveState: true,
@@ -398,6 +313,27 @@
     Inertia.delete(`/admin/arts/${row.id}`, {
       preserveState: false,
     })
+  }
+
+  function onPagination(page: string) {
+    let curPage = parseInt(page)
+    pagination.value.page = curPage
+    form.page = curPage
+    doQuery()
+  }
+
+  function onSort(params) {
+    const { sortBy } = params.pagination
+
+    pagination.value.descending = !pagination.value.descending
+
+    if (sortBy) {
+      pagination.value.sortBy = sortBy
+      form.sortBy = sortBy
+    }
+
+    form.descending = pagination.value.descending ? 1 : 0
+    doQuery()
   }
 
   const doQuery = () => {

@@ -21,3 +21,10 @@ export interface Col {
   sortable: boolean
   format?: any
 }
+
+export interface ArtRowFormType {
+  files: File[]
+  title?: string | null
+  description: string
+  id?: number | null
+}

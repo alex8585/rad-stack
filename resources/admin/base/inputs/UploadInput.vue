@@ -1,23 +1,31 @@
 <template>
-  <div>
-    <ul class="flex">
-      <li v-for="(file, i) in files" :key="i">
-        <div class="img-wrapp">
-          <img class="image" :src="imgUrlFromFile(file)" />
-          <q-icon class="delete-icon" name="clear" @click="deleteHandler(i)" />
-        </div>
-      </li>
-    </ul>
+  <div ref="root">
+    <div>
+      <ul class="flex">
+        <li v-for="(file, i) in files" :key="i">
+          <div class="img-wrapp">
+            <img class="image" :src="imgUrlFromFile(file)" />
+            <q-icon
+              class="delete-icon"
+              name="clear"
+              @click="deleteHandler(i)"
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <input
+      ref="input"
+      style="display: none"
+      v-bind="$attrs"
+      type="file"
+      :multiple="multiple"
+      @test="test"
+      @change="onChangeHandler"
+    />
+    <q-btn label="Upload Images" color="primary" @click="choiceFiles"></q-btn>
   </div>
-  <input
-    ref="input"
-    style="display: none"
-    v-bind="$attrs"
-    type="file"
-    :multiple="multiple"
-    @change="onChangeHandler"
-  />
-  <q-btn label="Upload Images" color="primary" @click="choiceFiles"></q-btn>
 </template>
 
 <script lang="ts" setup>
@@ -28,18 +36,16 @@
       type: Array,
     },
   })
-
   onMounted(() => {
-    /* console.log(files.value) */
     files.value = props.initFiles
-    /* console.log(files.value) */
+    emit('mount')
   })
 
-  const input = ref(false)
+  const input = ref()
+  const files = ref()
+  const root = ref()
 
-  const files = ref([])
-
-  const emit = defineEmits(['change'])
+  const emit = defineEmits(['change', 'mount'])
 
   function imgUrlFromFile(file) {
     let urlCreator = window.URL || window.webkitURL
@@ -57,7 +63,7 @@
     let curFiles = e.target.files
 
     for (const file of curFiles) {
-      files.value.push(file)
+      files.value.push(file as any)
     }
     /* console.log(files.value) */
 
@@ -67,11 +73,16 @@
   function choiceFiles() {
     input.value.click()
   }
+  const reset = () => {
+    files.value = []
+  }
+
   const multiple = true
 
-  /* function test() { */
-  /*   console.log('t') */
-  /* } */
+  defineExpose({
+    root,
+    reset,
+  })
 </script>
 
 <style scoped>
