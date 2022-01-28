@@ -19,6 +19,6 @@ yarn-error.log
 .php-cs-fixer.cache
 _ide_helper.php
 .phpstorm.meta.php
-tags
-tags.lock
-tags.temp
+/tags
+/tags.lock
+/tags.temp
