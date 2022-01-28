@@ -8,7 +8,7 @@ use Spatie\Tags\Tag;
 /**
  * @property Tag $resource
  */
-class TagResource extends JsonResource
+class PortfolioResource extends JsonResource
 {
     public static $wrap;
 
@@ -21,6 +21,7 @@ class TagResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->resource->only('id', 'name', 'order_number');
+        /* dd($this->resource); */
+        return $this->resource;
     }
 }

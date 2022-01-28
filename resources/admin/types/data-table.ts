@@ -28,3 +28,8 @@ export interface ArtRowFormType {
   description: string
   id?: number | null
 }
+export interface TagRowFormType {
+  name?: string | null
+  order_number: string
+  id?: number | null
+}

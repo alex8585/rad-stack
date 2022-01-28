@@ -79,14 +79,22 @@
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
-              <div>Description</div>
-              <q-editor v-model="rowForm.description" min-height="5rem" />
+              <q-item>
+                <q-item-section>
+                  <div>Description</div>
+                  <q-editor v-model="rowForm.description" min-height="5rem" />
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <UploadInput
+                    ref="createArtUploadInputRef"
+                    @mount="createArtUploadMounHandler"
+                    @change="uploadInputChangeHandler"
+                  ></UploadInput>
+                </q-item-section>
+              </q-item>
             </q-list>
-            <UploadInput
-              ref="createArtUploadInputRef"
-              @mount="createArtUploadMounHandler"
-              @change="uploadInputChangeHandler"
-            ></UploadInput>
           </q-form>
         </q-card-section>
         <q-card-section>
@@ -127,16 +135,23 @@
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
-              <div>Description</div>
-              <q-editor v-model="rowForm.description" min-height="5rem" />
-            </q-list>
 
-            <div v-if="showEditDialog">
-              <UploadInput
-                :init-files="rowForm.files"
-                @change="uploadInputChangeHandler"
-              ></UploadInput>
-            </div>
+              <q-item>
+                <q-item-section>
+                  <div>Description</div>
+                  <q-editor v-model="rowForm.description" min-height="5rem" />
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <UploadInput
+                    :init-files="rowForm.files"
+                    @change="uploadInputChangeHandler"
+                  ></UploadInput>
+                </q-item-section>
+              </q-item>
+            </q-list>
           </q-form>
         </q-card-section>
         <q-card-section>

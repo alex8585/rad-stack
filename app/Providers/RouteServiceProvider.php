@@ -118,6 +118,19 @@ class RouteServiceProvider extends ServiceProvider
             )
         ;
 
+        Route::prefix('api/v1')
+            ->name('api.v1.')
+            ->group(
+                function () {
+                    (new RouteRegistrar(app(Router::class)))
+                        ->useRootNamespace(app()->getNamespace())
+                        ->useMiddleware(['api'])
+                        ->registerDirectory(app_path('Http/Controllers/Api/V1'))
+                    ;
+                }
+            )
+        ;
+
         Route::get('glide/{path}', [ImageController::class, 'glide'])->where('path', '.+');
     }
 }

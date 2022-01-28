@@ -7,9 +7,7 @@ use App\Http\Queries\ArtQuery;
 use App\Http\Queries\UserQuery;
 use App\Http\Requests\Admin\ArtStoreRequest;
 use App\Http\Requests\Admin\ArtUpdateRequest;
-use App\Http\Resources\Admin\UserResource;
 use App\Models\Art;
-use App\Models\User;
 use Inertia\Inertia;
 use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
@@ -41,16 +39,12 @@ class ArtController extends Controller
         /* ; */
     }
 
-    #[Get('{user}', name: 'users.show')]
-    public function show(User $user)
+    #[Get('{art}', name: 'art.show')]
+    public function show()
     {
-        return Inertia::render('users/Index', [
-            'action' => 'show',
-            'user' => UserResource::make($user),
-        ] + app(UserQuery::class)->make()->get());
     }
 
-    #[Post('/', name: 'users.store')]
+    #[Post('/', name: 'arts.store')]
     public function store(ArtStoreRequest $request)
     {
         /* dd($request); */

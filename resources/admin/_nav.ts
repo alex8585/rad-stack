@@ -29,13 +29,13 @@ const mainNav: (NavLink | NavTitle)[] = [
   },
   // { title: __('Content Managment') },
   {
-    href: route('admin.posts'),
+    href: route('admin.tags'),
     active: () =>
-      route().current('admin.posts') || route().current('admin.posts.*'),
+      route().current('admin.tags') || route().current('admin.tags.*'),
     icon: 'newspaper',
 
     newicon: 'code',
-    text: __('Posts'),
+    text: __('Tags'),
   },
   // { title: __('Access Managment') },
   {

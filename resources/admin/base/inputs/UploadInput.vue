@@ -103,7 +103,8 @@
 
   .img-wrapp {
     position: relative;
-    margin: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
     width: 100px;
     height: 100px;
   }
