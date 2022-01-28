@@ -189,6 +189,7 @@
     total: Number,
     currentPage: Number,
   })
+
   const columns: Array<Col> = [
     {
       name: 'id',

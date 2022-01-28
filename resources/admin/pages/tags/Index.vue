@@ -55,108 +55,8 @@
       </div>
     </div>
 
-    <q-dialog v-model="showCreateDialog">
-      <q-card style="width: 600px; max-width: 60vw">
-        <q-card-section>
-          <q-btn
-            v-close-popup
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-          ></q-btn>
-          <div class="text-h6">Create Tag</div>
-        </q-card-section>
-        <q-separator inset></q-separator>
-        <q-card-section class="q-pt-none">
-          <q-form class="q-gutter-md">
-            <q-list>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Name</q-item-label>
-                  <q-input v-model="rowForm.name" />
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Order number</q-item-label>
-                  <q-input
-                    v-model="rowForm.order_number"
-                    type="number"
-                    filled
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-form>
-        </q-card-section>
-        <q-card-section>
-          <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary"></q-btn>
-            <q-btn
-              v-close-popup
-              label="Save"
-              color="primary"
-              @click="createRow"
-            ></q-btn>
-          </q-card-actions>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="showEditDialog">
-      <q-card style="width: 600px; max-width: 60vw">
-        <q-card-section>
-          <q-btn
-            v-close-popup
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-          ></q-btn>
-          <div class="text-h6">Update Tag</div>
-        </q-card-section>
-        <q-separator inset></q-separator>
-        <q-card-section class="q-pt-none">
-          <q-form class="q-gutter-md">
-            <q-list>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Name</q-item-label>
-                  <q-input v-model="rowForm.name" filled />
-                </q-item-section>
-              </q-item>
-
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs">Order number</q-item-label>
-                  <q-input
-                    v-model="rowForm.order_number"
-                    type="number"
-                    filled
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-form>
-        </q-card-section>
-        <q-card-section>
-          <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary"></q-btn>
-            <q-btn
-              v-close-popup
-              label="Save"
-              color="primary"
-              @click="updateRow"
-            ></q-btn>
-          </q-card-actions>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <CreateDialog ref="createDialRef" @send="createSendHandler" />
+    <EditDialog ref="editDialRef" @send="editSendHandler" />
   </app-layout>
 </template>
 
@@ -168,6 +68,8 @@
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
 
+  import CreateDialog from './CreateDialog.vue'
+  import EditDialog from './EditDialog.vue'
   const $q = useQuasar()
 
   let props = defineProps({
@@ -179,6 +81,7 @@
     total: Number,
     currentPage: Number,
   })
+
   const columns: Array<Col> = [
     {
       name: 'id',
@@ -222,7 +125,7 @@
     rowsNumber: props.total,
   })
 
-  const form = useForm({
+  const paginateForm = useForm({
     page: props.currentPage,
     perPage: props.perPage,
     sortBy: props.sortBy,
@@ -230,32 +133,25 @@
     filter: {},
   })
 
-  const initRowForm: TagRowFormType = {
-    name: null,
-    order_number: '',
-    id: null,
-  }
-  const rowForm = useForm(initRowForm)
-
-  const showEditDialog = ref(false)
-  const showCreateDialog = ref(false)
+  /* const showEditDialog = ref(false) */
+  /* const showCreateDialog = ref(false) */
   const loading = ref(false)
+  const createDialRef = ref()
+  const editDialRef = ref()
 
   let totalCount = props.total!
   let pageSize = props.perPage!
   let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
   function createDialog() {
-    rowForm.reset()
-    showCreateDialog.value = true
+    createDialRef.value.reset()
+    createDialRef.value.show()
   }
 
-  async function editRow(params) {
+  function editRow(params) {
     let { row } = params
-    showEditDialog.value = true
-    rowForm.name = row.name
-    rowForm.order_number = row.order_number
-    rowForm.id = row.id
+    editDialRef.value.set(row)
+    editDialRef.value.show()
   }
 
   function deleteConfirm(params) {
@@ -268,19 +164,12 @@
     })
   }
 
-  function createRow() {
-    rowForm.id = null
-    rowForm.post(`/admin/tags/`, {
-      preserveState: false,
-    })
+  function createSendHandler(form) {
+    form.post(`/admin/tags/`)
   }
 
-  function updateRow() {
-    console.log(rowForm)
-    rowForm.post(`/admin/tags/${rowForm.id}`, {
-      preserveState: true,
-      onSuccess: () => rowForm.reset(),
-    })
+  function editSendHandler(form) {
+    form.post(`/admin/tags/${form.id}`)
   }
 
   function deleteRow(params) {
@@ -293,7 +182,7 @@
   function onPagination(page: string) {
     let curPage = parseInt(page)
     pagination.value.page = curPage
-    form.page = curPage
+    paginateForm.page = curPage
     doQuery()
   }
 
@@ -304,16 +193,16 @@
 
     if (sortBy) {
       pagination.value.sortBy = sortBy
-      form.sortBy = sortBy
+      paginateForm.sortBy = sortBy
     }
 
-    form.descending = pagination.value.descending ? 1 : 0
+    paginateForm.descending = pagination.value.descending ? 1 : 0
     doQuery()
   }
 
   const doQuery = () => {
     loading.value = true
-    form.get(location.pathname, {
+    paginateForm.get(location.pathname, {
       preserveState: true,
       onSuccess: () => {
         loading.value = false
