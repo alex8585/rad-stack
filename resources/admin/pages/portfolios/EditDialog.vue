@@ -11,7 +11,7 @@
           class="float-right"
           color="grey-8"
         ></q-btn>
-        <div class="text-h6">Create Tag</div>
+        <div class="text-h6">Update Portfolios</div>
       </q-card-section>
       <q-separator inset></q-separator>
       <q-card-section class="q-pt-none">
@@ -23,10 +23,18 @@
                 <q-input v-model="form.name" filled />
               </q-item-section>
             </q-item>
+
+            <q-item>
+              <q-item-section>
+                <q-item-label class="q-pb-xs">Url</q-item-label>
+                <q-input v-model="form.url" filled />
+              </q-item-section>
+            </q-item>
+
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs">Order number</q-item-label>
-                <q-input v-model="form.order_number" filled type="number" />
+                <q-input v-model="form.order_number" type="number" filled />
               </q-item-section>
             </q-item>
           </q-list>
@@ -49,7 +57,7 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
-  import { TagRowFormType } from '@admin/types/data-table'
+  import { PortfoliosRowFormType } from '@admin/types/data-table'
 
   const props = defineProps({
     initValues: {
@@ -66,8 +74,9 @@
 
   const isShow = ref(false)
 
-  const ititForm: TagRowFormType = {
+  const ititForm: PortfoliosRowFormType = {
     name: null,
+    url: null,
     order_number: '',
     id: null,
   }
@@ -90,7 +99,7 @@
   }
 
   function reset() {
-    set(ititForm)
+    form.reset()
     emit('change', form)
   }
 
@@ -101,5 +110,6 @@
   defineExpose({
     reset,
     show,
+    set,
   })
 </script>

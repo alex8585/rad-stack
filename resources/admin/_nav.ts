@@ -29,6 +29,17 @@ const mainNav: (NavLink | NavTitle)[] = [
   },
   // { title: __('Content Managment') },
   {
+    href: route('admin.portfolios'),
+    active: () =>
+      route().current('admin.portfolios') ||
+      route().current('admin.portfolios.*'),
+    icon: 'portrait',
+
+    newicon: 'portrait',
+    text: __('Portfolios'),
+  },
+
+  {
     href: route('admin.tags'),
     active: () =>
       route().current('admin.tags') || route().current('admin.tags.*'),

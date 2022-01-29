@@ -7,7 +7,7 @@
 
       <q-table
         v-model:pagination="pagination"
-        title="Tags"
+        title="Portfolios"
         :rows="items"
         :columns="columns"
         row-key="id"
@@ -82,6 +82,9 @@
     currentPage: Number,
   })
 
+  let currentUrl = route(route().current())
+  console.log(props.items)
+
   const columns: Array<Col> = [
     {
       name: 'id',
@@ -105,7 +108,6 @@
       align: 'left',
       label: 'Order',
       field: 'order_number',
-      format: (val) => shorten(val, 3, ''),
       sortable: true,
     },
     {
@@ -165,16 +167,16 @@
   }
 
   function createSendHandler(form) {
-    form.post(`/admin/tags/`)
+    form.post(currentUrl)
   }
 
   function editSendHandler(form) {
-    form.post(`/admin/tags/${form.id}`)
+    form.post(`${currentUrl}/${form.id}`)
   }
 
   function deleteRow(params) {
     let { row } = params
-    Inertia.delete(`/admin/tags/${row.id}`, {
+    Inertia.delete(`${currentUrl}/${row.id}`, {
       preserveState: false,
     })
   }

@@ -7,7 +7,7 @@
 
       <q-table
         v-model:pagination="pagination"
-        title="Treats"
+        title="Arts"
         :rows="items"
         :columns="columns"
         row-key="id"

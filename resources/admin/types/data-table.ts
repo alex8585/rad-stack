@@ -33,3 +33,10 @@ export interface TagRowFormType {
   order_number: string
   id?: number | null
 }
+
+export interface PortfolioRowFormType {
+  name?: string | null
+  url?: string
+  order_number: string
+  id?: number | null
+}
