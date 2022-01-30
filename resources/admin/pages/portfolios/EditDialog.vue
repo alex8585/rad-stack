@@ -37,6 +37,15 @@
                 <q-input v-model="form.order_number" type="number" filled />
               </q-item-section>
             </q-item>
+
+            <q-item>
+              <q-item-section>
+                <UploadInput
+                  :init-files="form.files"
+                  @change="uploadInputChangeHandler"
+                ></UploadInput>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-form>
       </q-card-section>
@@ -57,7 +66,7 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
-  import { PortfoliosRowFormType } from '@admin/types/data-table'
+  import { PortfolioRowFormType } from '@admin/types/data-table'
 
   const props = defineProps({
     initValues: {
@@ -70,15 +79,20 @@
     },
   })
 
+  function uploadInputChangeHandler(files) {
+    form.files = files
+  }
+
   const emit = defineEmits(['change', 'mount', 'send'])
 
   const isShow = ref(false)
 
-  const ititForm: PortfoliosRowFormType = {
+  const ititForm: PortfolioRowFormType = {
     name: null,
     url: null,
     order_number: '',
     id: null,
+    files: [],
   }
 
   const form = useForm(ititForm)
@@ -92,9 +106,17 @@
     emit('mount')
   })
 
-  function set(row) {
+  async function set(row) {
     for (const key in row) {
       form[key] = row[key]
+    }
+    form.files = []
+    if (row.image) {
+      let response = await fetch(row.image)
+      var filename = row.image.replace(/^.*[\\/]/, '')
+      let data = await response.blob()
+      let file = new File([data], filename)
+      form.files.push(file)
     }
   }
 

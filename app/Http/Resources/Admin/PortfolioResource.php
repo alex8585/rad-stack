@@ -21,7 +21,25 @@ class PortfolioResource extends JsonResource
      */
     public function toArray($request)
     {
-        /* dd($this->resource); */
-        return $this->resource;
+        /* $img = $this->resource->getMedia('images')->first(); */
+        $img = $this->resource->media->first();
+
+        $thumb = null;
+        $image = null;
+
+        if ($img) {
+            $thumb = $img->getUrl('thumb');
+            $image = $img->getUrl();
+        }
+
+        return collect($this->resource)
+            ->except(['media'])
+            ->merge([
+                'thumb' => $thumb,
+                'image' => $image,
+            ])
+        ;
+
+        return $this->resource->toArray();
     }
 }

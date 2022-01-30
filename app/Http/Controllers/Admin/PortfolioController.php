@@ -27,7 +27,14 @@ class PortfolioController extends Controller
     #[Post('/', name: 'portfolio.store')]
     public function store(PortfolioStoreRequest $request)
     {
-        Portfolio::create($request->all());
+        /* dd($request->all()); */
+        $portfolio = Portfolio::create($request->except(['files']));
+        $files = $request->files->get('files');
+        if ($files) {
+            foreach ($files as $file) {
+                $portfolio->addMedia($file)->toMediaCollection('images');
+            }
+        }
 
         return back()->with('success', 'The portfolio has been stored');
     }
@@ -35,7 +42,16 @@ class PortfolioController extends Controller
     #[Post('{portfolio}', name: 'portfolio.update') ]
     public function update(Portfolio $portfolio, PortfolioUpdateRequest $request)
     {
-        $portfolio->update($request->all());
+        $portfolio->update($request->except(['files']));
+
+        $portfolio->clearMediaCollection('images');
+
+        $files = $request->files->get('files');
+        if ($files) {
+            foreach ($files as $file) {
+                $portfolio->addMedia($file)->toMediaCollection('images');
+            }
+        }
 
         return back()->with('success', 'The portfolio has been updated');
     }

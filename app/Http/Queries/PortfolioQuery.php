@@ -19,6 +19,7 @@ class PortfolioQuery extends BaseQuery
         $sort = request()->get('sortBy', 'id');
 
         $this->query = QueryBuilder::for(Portfolio::class)
+            ->with('media')
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name'])),
                 AllowedFilter::partial('name'),

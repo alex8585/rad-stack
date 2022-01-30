@@ -37,6 +37,14 @@
                 <q-input v-model="form.order_number" filled type="number" />
               </q-item-section>
             </q-item>
+            <q-item>
+              <q-item-section>
+                <UploadInput
+                  :init-files="form.files"
+                  @change="uploadInputChangeHandler"
+                ></UploadInput>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-form>
       </q-card-section>
@@ -70,6 +78,10 @@
     },
   })
 
+  function uploadInputChangeHandler(files) {
+    form.files = files
+  }
+
   const emit = defineEmits(['change', 'mount', 'send'])
 
   const isShow = ref(false)
@@ -79,6 +91,7 @@
     url: null,
     order_number: '',
     id: null,
+    files: [],
   }
 
   const form = useForm(ititForm)
@@ -104,6 +117,8 @@
   }
 
   function show() {
+    reset()
+    form.files = []
     isShow.value = true
   }
 

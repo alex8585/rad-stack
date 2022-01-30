@@ -19,6 +19,7 @@ class ArtQuery extends BaseQuery
         $sort = request()->get('sortBy', 'id');
 
         $this->query = QueryBuilder::for(Art::class)
+            ->with('media')
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'email'])),
                 AllowedFilter::partial('name'),

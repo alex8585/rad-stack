@@ -36,7 +36,8 @@ export interface TagRowFormType {
 
 export interface PortfolioRowFormType {
   name?: string | null
-  url?: string
+  url?: string | null
   order_number: string
   id?: number | null
+  files: File[]
 }

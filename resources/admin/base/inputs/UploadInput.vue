@@ -35,7 +35,12 @@
       default: () => [],
       type: Array,
     },
+    multiple: {
+      default: () => false,
+      type: Boolean,
+    },
   })
+
   onMounted(() => {
     files.value = props.initFiles
     emit('mount')
@@ -62,6 +67,10 @@
   function onChangeHandler(e) {
     let curFiles = e.target.files
 
+    if (curFiles.length && !props.multiple) {
+      files.value = []
+    }
+
     for (const file of curFiles) {
       files.value.push(file as any)
     }
@@ -76,8 +85,6 @@
   const reset = () => {
     files.value = []
   }
-
-  const multiple = true
 
   defineExpose({
     root,

@@ -15,21 +15,21 @@
         :loading="loading"
         @request="onSort"
       >
-        <template #body-cell-thumb="props">
-          <q-td :props="props">
-            <img :src="props.row.thumb" />
+        <template #body-cell-thumb="params">
+          <q-td :props="params">
+            <img :src="params.row.thumb" />
           </q-td>
         </template>
 
-        <template #body-cell-actions="props">
-          <q-td :props="props">
+        <template #body-cell-actions="params">
+          <q-td :props="params">
             <q-btn
               dense
               round
               flat
               color="grey"
               icon="edit"
-              @click="editRow(props)"
+              @click="editRow(params)"
             ></q-btn>
             <q-btn
               dense
@@ -37,7 +37,7 @@
               flat
               color="grey"
               icon="delete"
-              @click="deleteConfirm(props)"
+              @click="deleteConfirm(params)"
             ></q-btn>
           </q-td>
         </template>
@@ -89,7 +89,7 @@
                 <q-item-section>
                   <UploadInput
                     ref="createArtUploadInputRef"
-                    @mount="createArtUploadMounHandler"
+                    :multiple="true"
                     @change="uploadInputChangeHandler"
                   ></UploadInput>
                 </q-item-section>
@@ -146,6 +146,7 @@
               <q-item>
                 <q-item-section>
                   <UploadInput
+                    :multiple="true"
                     :init-files="rowForm.files"
                     @change="uploadInputChangeHandler"
                   ></UploadInput>
@@ -172,12 +173,11 @@
 
 <script lang="ts" setup>
   import { Col, ArtRowFormType } from '@admin/types/data-table'
-  import { shorten, imgUrlFromFile } from '@admin/functions'
-  import { ref, onMounted, watchEffect } from 'vue'
+  import { shorten } from '@admin/functions'
+  import { ref } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
-
   const $q = useQuasar()
 
   let props = defineProps({
@@ -260,7 +260,6 @@
   const showEditDialog = ref(false)
   const showCreateDialog = ref(false)
   const loading = ref(false)
-  const uploadInputRef = ref(null)
   const createArtUploadInputRef = ref(null)
 
   /* watchEffect(() => { */
@@ -278,10 +277,6 @@
     rowForm.files = []
     rowForm.reset()
     showCreateDialog.value = true
-  }
-
-  function createArtUploadMounHandler() {
-    /* createArtUploadInputRef.value.reset() */
   }
 
   async function editRow(params) {

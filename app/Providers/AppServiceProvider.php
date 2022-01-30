@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Support\LaravelViteManifest;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Model::preventLazyLoading();
+
         JsonResource::withoutWrapping();
         Blade::directive('vite', function ($expression) {
             return '{!! App\Facades\ViteManifest::embed('.$expression.') !!}';
