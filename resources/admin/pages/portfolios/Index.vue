@@ -23,6 +23,12 @@
           </q-td>
         </template>
 
+        <template #body-cell-tags="params">
+          <q-td :props="params">
+            <span v-for="tag in params.row.tags" :key="tag.id"> &nbsp; {{ tag.name }} </span>
+          </q-td>
+        </template>
+
         <template #body-cell-actions="params">
           <q-td :props="params">
             <q-btn
@@ -57,14 +63,14 @@
       </div>
     </div>
 
-    <CreateDialog ref="createDialRef" @send="createSendHandler" />
-    <EditDialog ref="editDialRef" @send="editSendHandler" />
+    <CreateDialog ref="createDialRef" :tags="tags" @send="createSendHandler" />
+    <EditDialog ref="editDialRef" :tags="tags" @send="editSendHandler" />
   </app-layout>
 </template>
 
 <script lang="ts" setup>
   import { Col } from '@admin/types/data-table'
-  import { shorten } from '@admin/functions'
+  import { shorten, getPageCount } from '@admin/functions'
   import { ref } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
   import { useQuasar } from 'quasar'
@@ -81,8 +87,11 @@
     perPage: Number,
     total: Number,
     currentPage: Number,
+    tags: Array,
   })
-  let currentUrl = route(route().current())
+
+  const currentUrl = route(route().current())
+  let pagesCount = getPageCount(props.total, props.perPage)
 
   const columns: Array<Col> = [
     {
@@ -114,7 +123,14 @@
       align: 'left',
       label: 'Image',
       field: 'thumb',
-      sortable: true,
+      sortable: false,
+    },
+    {
+      name: 'tags',
+      align: 'left',
+      label: 'Tags',
+      field: 'tags',
+      sortable: false,
     },
 
     {
@@ -142,16 +158,11 @@
     filter: {},
   })
 
-  /* const showEditDialog = ref(false) */
-  /* const showCreateDialog = ref(false) */
   const loading = ref(false)
   const createDialRef = ref()
   const editDialRef = ref()
 
-  let totalCount = props.total!
-  let pageSize = props.perPage!
-  let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
-
+  console.log(props)
   function createDialog() {
     createDialRef.value.reset()
     createDialRef.value.show()
@@ -159,7 +170,6 @@
 
   function editRow(params) {
     let { row } = params
-    /* console.log(row) */
     editDialRef.value.set(row)
     editDialRef.value.show()
   }

@@ -46,6 +46,15 @@
                 ></UploadInput>
               </q-item-section>
             </q-item>
+
+            <q-select
+              v-model="form.tags"
+              filled
+              multiple
+              :options="options"
+              label="Tags"
+              style="width: 250px"
+            />
           </q-list>
         </q-form>
       </q-card-section>
@@ -66,9 +75,18 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
-  import { PortfolioRowFormType } from '@admin/types/data-table'
+  import {
+    OptionType,
+    TagType,
+    PortfolioRowFormType,
+  } from '@admin/types/data-table'
 
   const props = defineProps({
+    tags: {
+      default: () => [],
+      type: Array,
+    },
+
     initValues: {
       default: () => [],
       type: Array,
@@ -79,6 +97,7 @@
     },
   })
 
+  let options: Array<OptionType> = []
   function uploadInputChangeHandler(files) {
     form.files = files
   }
@@ -93,6 +112,7 @@
     order_number: '',
     id: null,
     files: [],
+    tags: [],
   }
 
   const form = useForm(ititForm)
@@ -103,13 +123,26 @@
 
   onMounted(() => {
     isShow.value = props.show
+    console.log(form.tags)
+
+    for (const tag of props.tags as Array<TagType>) {
+      let option = {
+        label: tag.name,
+        value: tag.id,
+      }
+      options.push(option)
+    }
     emit('mount')
   })
 
   async function set(row) {
     for (const key in row) {
+      if (key == 'tags' || key == 'files') {
+        continue
+      }
       form[key] = row[key]
     }
+
     form.files = []
     if (row.image) {
       let response = await fetch(row.image)
@@ -117,6 +150,15 @@
       let data = await response.blob()
       let file = new File([data], filename)
       form.files.push(file)
+    }
+
+    form.tags = []
+    for (const tag of row.tags as Array<TagType>) {
+      let option: OptionType = {
+        label: tag.name,
+        value: tag.id,
+      }
+      form.tags.push(option)
     }
   }
 

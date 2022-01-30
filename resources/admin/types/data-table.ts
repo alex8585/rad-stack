@@ -33,11 +33,19 @@ export interface TagRowFormType {
   order_number: string
   id?: number | null
 }
-
+export interface OptionType {
+  label: string
+  value: number
+}
+export interface TagType {
+  name: string
+  id: number
+}
 export interface PortfolioRowFormType {
   name?: string | null
   url?: string | null
   order_number: string
   id?: number | null
   files: File[]
+  tags: OptionType[]
 }

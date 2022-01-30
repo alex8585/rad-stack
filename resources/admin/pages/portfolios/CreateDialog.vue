@@ -45,6 +45,15 @@
                 ></UploadInput>
               </q-item-section>
             </q-item>
+
+            <q-select
+              v-model="form.tags"
+              filled
+              multiple
+              :options="options"
+              label="Tags"
+              style="width: 250px"
+            />
           </q-list>
         </q-form>
       </q-card-section>
@@ -65,9 +74,18 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
-  import { PortfolioRowFormType } from '@admin/types/data-table'
+
+  import {
+    OptionType,
+    TagType,
+    PortfolioRowFormType,
+  } from '@admin/types/data-table'
 
   const props = defineProps({
+    tags: {
+      default: () => [],
+      type: Array,
+    },
     initValues: {
       default: () => [],
       type: Array,
@@ -78,6 +96,8 @@
     },
   })
 
+  let options: Array<OptionType> = []
+
   function uploadInputChangeHandler(files) {
     form.files = files
   }
@@ -85,13 +105,13 @@
   const emit = defineEmits(['change', 'mount', 'send'])
 
   const isShow = ref(false)
-
   const ititForm: PortfolioRowFormType = {
     name: null,
     url: null,
     order_number: '',
     id: null,
     files: [],
+    tags: [],
   }
 
   const form = useForm(ititForm)
@@ -102,6 +122,13 @@
 
   onMounted(() => {
     isShow.value = props.show
+    for (const tag of props.tags as Array<TagType>) {
+      let option = {
+        label: tag.name,
+        value: tag.id,
+      }
+      options.push(option)
+    }
     emit('mount')
   })
 

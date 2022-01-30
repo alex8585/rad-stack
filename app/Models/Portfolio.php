@@ -12,6 +12,11 @@ class Portfolio extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'portfolio_tags');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')

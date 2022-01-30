@@ -22,3 +22,9 @@ export function shorten(str, no_words, suff = ' ...') {
   }
   return newStr
 }
+
+export function getPageCount(totalCount, pageSize) {
+  const pagesCount =
+    totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
+  return pagesCount
+}
