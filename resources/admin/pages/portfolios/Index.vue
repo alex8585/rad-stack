@@ -25,7 +25,9 @@
 
         <template #body-cell-tags="params">
           <q-td :props="params">
-            <span v-for="tag in params.row.tags" :key="tag.id"> &nbsp; {{ tag.name }} </span>
+            <span v-for="tag in params.row.tags" :key="tag.id">
+              &nbsp; {{ tag.name }}
+            </span>
           </q-td>
         </template>
 

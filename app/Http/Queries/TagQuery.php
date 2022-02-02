@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class TagQuery extends BaseQuery
 {
-    protected int $perPage = 5;
+    protected int $perPage = 20;
 
     public function __construct()
     {

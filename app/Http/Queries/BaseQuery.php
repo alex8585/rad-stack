@@ -27,9 +27,10 @@ abstract class BaseQuery
 
     public function paginateOrExport(Closure $response)
     {
-        if (request()->wantsJson()) {
-            return $this->collection();
-        }
+        /* if (request()->wantsJson()) { */
+        /*     dd('111'); */
+        /*     return $this->collection(); */
+        /* } */
 
         if (request()->get('export')) {
             $fileName = Str::slug(trans_choice("crud.{$this->resource}.name", 10));

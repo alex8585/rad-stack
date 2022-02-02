@@ -17,8 +17,14 @@ class PortfolioQuery extends BaseQuery
     {
         $direction = request()->get('descending', 0) ? 'ASC' : 'DESC';
         $sort = request()->get('sortBy', 'id');
+        $tags = request()->get('tags', null);
 
-        $this->query = QueryBuilder::for(Portfolio::class)
+        $tagsArr = [];
+        if ($tags) {
+            $tagsArr = explode(',', $tags);
+        }
+
+        $query = QueryBuilder::for(Portfolio::class)
             ->with(['media', 'tags'])
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name'])),
@@ -27,6 +33,14 @@ class PortfolioQuery extends BaseQuery
             ])
             ->orderBy($sort, $direction)
         ;
+
+        $query->when($tagsArr, function ($q) use ($tagsArr) {
+            $q->whereHas('tags', function ($query) use ($tagsArr) {
+                $query->whereIn('tags.id', $tagsArr);
+            });
+        });
+
+        $this->query = $query;
         $this->resource = 'portfolios';
     }
 
