@@ -6,7 +6,7 @@
     :class="href ? '' : 'text-left w-full'"
   >
     <component :is="`${icon}-icon`" v-if="icon" class="w-4 h-4 mr-2" />
-    <slot></slot>
+    <slot />
   </component>
 </template>
 

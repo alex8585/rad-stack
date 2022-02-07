@@ -25,7 +25,7 @@
         <!-- Page Heading -->
         <header v-if="$slots.header" class="bg-white shadow">
           <div class="py-6 px-4 sm:px-6 lg:px-8">
-            <slot name="header"></slot>
+            <slot name="header" />
           </div>
         </header>
 
@@ -33,11 +33,11 @@
 
         <!-- Page Content -->
         <main class="px-4 py-8 md:p-8">
-          <slot></slot>
+          <slot />
         </main>
       </div>
 
-      <slot name="aside"></slot>
+      <slot name="aside" />
     </div>
   </div>
 </template>

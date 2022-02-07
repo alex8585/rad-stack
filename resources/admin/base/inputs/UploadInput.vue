@@ -24,7 +24,7 @@
       @test="test"
       @change="onChangeHandler"
     />
-    <q-btn label="Upload Images" color="primary" @click="choiceFiles"></q-btn>
+    <q-btn label="Upload Images" color="primary" @click="choiceFiles" />
   </div>
 </template>
 

@@ -6,7 +6,7 @@
       class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium focus:outline-none transition"
       :class="{ 'text-left w-full': !!href, active }"
     >
-      <slot></slot>
+      <slot />
     </component>
   </div>
 </template>

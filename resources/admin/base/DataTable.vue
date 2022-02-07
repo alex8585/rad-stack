@@ -92,7 +92,7 @@
           </th>
         </tr>
         <tr v-if="hasFilter" class="text-left">
-          <th v-if="!!$slots['bulk-actions']"></th>
+          <th v-if="!!$slots['bulk-actions']" />
           <th
             v-for="column in getColumns"
             :key="column.field"
@@ -154,9 +154,7 @@
     <span
       v-if="form.processing"
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-    >
-      <spinner class="h-24 w-24 text-primary" />
-    </span>
+    />
   </div>
 
   <data-iterator

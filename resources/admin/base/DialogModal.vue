@@ -14,16 +14,16 @@
     >
       <div class="px-6 py-4">
         <div class="text-lg">
-          <slot name="title"></slot>
+          <slot name="title" />
         </div>
 
         <div class="mt-4">
-          <slot name="content"></slot>
+          <slot name="content" />
         </div>
       </div>
 
       <div class="px-6 py-4 bg-gray-100 text-right">
-        <slot name="footer" :processing="processing"></slot>
+        <slot name="footer" :processing="processing" />
       </div>
     </base-form>
   </modal>

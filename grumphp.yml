@@ -13,4 +13,4 @@ grumphp:
     phpcsfixer:
       config: .php-cs-fixer.dist.php
     # phpstan:
-      # use_grumphp_paths: false
+    # use_grumphp_paths: false

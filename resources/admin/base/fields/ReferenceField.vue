@@ -9,7 +9,8 @@
     class="inline-block px-2 py-1 text-white text-sm rounded bg-gray-400"
     :href="route(`admin.${resource}.${link}`, value['id'])"
     @click.stop
-    >{{ text ? value[text] : value }}
+  >
+    {{ text ? value[text] : value }}
   </inertia-link>
 </template>
 

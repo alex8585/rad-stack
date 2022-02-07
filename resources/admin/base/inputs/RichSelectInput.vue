@@ -1,5 +1,7 @@
 <template>
-  <input-label class="mb-1">{{ getLabel }}</input-label>
+  <input-label class="mb-1">
+    {{ getLabel }}
+  </input-label>
   <Multiselect
     v-model="formValue"
     v-bind="{ ...translations }"
@@ -16,11 +18,11 @@
     :delay="200"
   >
     <template #singlelabel="labelProps">
-      <slot name="singlelabel" :value="labelProps.value"></slot>
+      <slot name="singlelabel" :value="labelProps.value" />
     </template>
 
     <template #option="{ option }">
-      <slot name="option" :option="option"></slot>
+      <slot name="option" :option="option" />
     </template>
 
     <template #tag="{ option, handleTagRemove, disabled }">
@@ -29,7 +31,7 @@
         :option="option"
         :handleTagRemove="handleTagRemove"
         :disabled="disabled"
-      ></slot>
+      />
     </template>
   </Multiselect>
   <input-error :message="getError" class="mt-2" />
@@ -111,7 +113,7 @@
         'pr-3.5 relative z-10 opacity-40 transition duration-300 flex-shrink-0 flex-grow-0 flex hover:opacity-80',
       clearIcon:
         'bg-multiselect-remove bg-center bg-no-repeat w-4 h-4 py-px box-content inline-block',
-      spinner:
+      adminSpinner:
         'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin flex-shrink-0 flex-grow-0',
       dropdown:
         'absolute -left-px -right-px bottom-0 transform translate-y-full border border-gray-300 -mt-px overflow-y-scroll z-50 bg-white flex flex-col rounded-b',

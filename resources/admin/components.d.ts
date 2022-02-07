@@ -6,6 +6,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ActionMessage: typeof import('./base/ActionMessage.vue')['default']
     ActionSection: typeof import('./base/ActionSection.vue')['default']
+    AdminSpinner: typeof import('./base/AdminSpinner.vue')['default']
     AppAside: typeof import('./base/AppAside.vue')['default']
     AppLayout: typeof import('./layouts/AppLayout.vue')['default']
     AppLogo: typeof import('./base/AppLogo.vue')['default']
@@ -74,7 +75,6 @@ declare module 'vue' {
     ShowExternalButton: typeof import('./base/buttons/ShowExternalButton.vue')['default']
     ShowUser: typeof import('./components/users/ShowUser.vue')['default']
     SidebarNav: typeof import('./base/SidebarNav.vue')['default']
-    Spinner: typeof import('./base/Spinner.vue')['default']
     SwitchField: typeof import('./base/fields/SwitchField.vue')['default']
     SwitchInput: typeof import('./base/inputs/SwitchInput.vue')['default']
     SwitchToggle: typeof import('./base/SwitchToggle.vue')['default']

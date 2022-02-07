@@ -38,6 +38,6 @@ export default {
     app.component('ReferenceFilter', ReferenceFilter)
     app.component('DateFilter', DateFilter)
 
-    app.component('Draggable', draggable)
+    app.component('AdminDraggable', draggable)
   },
 }

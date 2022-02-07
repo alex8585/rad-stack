@@ -1,5 +1,7 @@
 <template>
-  <input-label class="mb-1">{{ getLabel }}</input-label>
+  <input-label class="mb-1">
+    {{ getLabel }}
+  </input-label>
   <div class="flex" :class="{ 'flex-col gap-1': stacked, 'gap-4': !stacked }">
     <label
       v-for="option in getChoices"

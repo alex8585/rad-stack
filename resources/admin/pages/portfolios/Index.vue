@@ -40,7 +40,7 @@
               color="grey"
               icon="edit"
               @click="editRow(params)"
-            ></q-btn>
+            />
             <q-btn
               dense
               round
@@ -48,7 +48,7 @@
               color="grey"
               icon="delete"
               @click="deleteConfirm(params)"
-            ></q-btn>
+            />
           </q-td>
         </template>
       </q-table>

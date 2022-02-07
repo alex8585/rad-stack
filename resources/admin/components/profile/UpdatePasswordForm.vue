@@ -7,7 +7,9 @@
       preserveScroll: true,
     }"
   >
-    <template #title> {{ $t('Update Password') }} </template>
+    <template #title>
+      {{ $t('Update Password') }}
+    </template>
 
     <template #description>
       {{

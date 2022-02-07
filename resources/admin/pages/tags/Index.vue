@@ -15,30 +15,30 @@
         :loading="loading"
         @request="onSort"
       >
-        <template #body-cell-thumb="props">
-          <q-td :props="props">
-            <img :src="props.row.thumb" />
+        <template #body-cell-thumb="params">
+          <q-td :props="params">
+            <img :src="params.row.thumb" />
           </q-td>
         </template>
 
-        <template #body-cell-actions="props">
-          <q-td :props="props">
+        <template #body-cell-actions="params">
+          <q-td :props="params">
             <q-btn
               dense
               round
               flat
               color="grey"
               icon="edit"
-              @click="editRow(props)"
-            ></q-btn>
+              @click="editRow(params)"
+            />
             <q-btn
               dense
               round
               flat
               color="grey"
               icon="delete"
-              @click="deleteConfirm(props)"
-            ></q-btn>
+              @click="deleteConfirm(params)"
+            />
           </q-td>
         </template>
       </q-table>
@@ -59,11 +59,10 @@
     <EditDialog ref="editDialRef" @send="editSendHandler" />
   </app-layout>
 </template>
-
 <script lang="ts" setup>
-  import { Col, TagRowFormType } from '@admin/types/data-table'
+  import { Col } from '@admin/types/data-table'
   import { shorten } from '@admin/functions'
-  import { ref, onMounted } from 'vue'
+  import { ref } from 'vue'
   import { useForm } from '@inertiajs/inertia-vue3'
   import { useQuasar } from 'quasar'
   import { Inertia } from '@inertiajs/inertia'
@@ -71,6 +70,8 @@
   import CreateDialog from './CreateDialog.vue'
   import EditDialog from './EditDialog.vue'
   const $q = useQuasar()
+  /* "@typescript-eslint/eslint-plugin": "^4.33.0", */
+  /* "@typescript-eslint/parser": "^4.33.0", */
 
   let props = defineProps({
     action: String,

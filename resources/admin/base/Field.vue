@@ -8,7 +8,7 @@
           v-if="type"
           :value="value"
           v-bind="$attrs"
-        ></component>
+        />
         <span v-else>{{ value }}</span>
       </template>
       <span v-else>-</span>

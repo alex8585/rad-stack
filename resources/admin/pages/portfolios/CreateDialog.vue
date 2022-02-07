@@ -10,30 +10,30 @@
           icon="close"
           class="float-right"
           color="grey-8"
-        ></q-btn>
+        />
         <div class="text-h6">Create Portfolio</div>
       </q-card-section>
-      <q-separator inset></q-separator>
+      <q-separator inset />
       <q-card-section class="q-pt-none">
         <q-form class="q-gutter-md">
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs">Name</q-item-label>
+                <q-item-label class="q-pb-xs"> Name </q-item-label>
                 <q-input v-model="form.name" filled />
               </q-item-section>
             </q-item>
 
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs">Url</q-item-label>
+                <q-item-label class="q-pb-xs"> Url </q-item-label>
                 <q-input v-model="form.url" filled />
               </q-item-section>
             </q-item>
 
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs">Order number</q-item-label>
+                <q-item-label class="q-pb-xs"> Order number </q-item-label>
                 <q-input v-model="form.order_number" filled type="number" />
               </q-item-section>
             </q-item>
@@ -42,7 +42,7 @@
                 <UploadInput
                   :init-files="form.files"
                   @change="uploadInputChangeHandler"
-                ></UploadInput>
+                />
               </q-item-section>
             </q-item>
 
@@ -59,13 +59,8 @@
       </q-card-section>
       <q-card-section>
         <q-card-actions align="right">
-          <q-btn v-close-popup flat label="Cancel" color="primary"></q-btn>
-          <q-btn
-            v-close-popup
-            label="Save"
-            color="primary"
-            @click="onSend"
-          ></q-btn>
+          <q-btn v-close-popup flat label="Cancel" color="primary" />
+          <q-btn v-close-popup label="Save" color="primary" @click="onSend" />
         </q-card-actions>
       </q-card-section>
     </q-card>

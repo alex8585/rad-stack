@@ -4,8 +4,12 @@
     :class="{ 'md:grid-cols-3': !!$slots.title || !!$slots.description }"
   >
     <section-title>
-      <template #title><slot name="title"></slot></template>
-      <template #description><slot name="description"></slot></template>
+      <template #title>
+        <slot name="title" />
+      </template>
+      <template #description>
+        <slot name="description" />
+      </template>
     </section-title>
 
     <div class="mt-5 md:mt-0 md:col-span-2">
@@ -23,7 +27,7 @@
           "
         >
           <div class="grid grid-cols-6 gap-6">
-            <slot name="form"></slot>
+            <slot name="form" />
           </div>
         </div>
 
@@ -35,7 +39,7 @@
             name="actions"
             :processing="processing"
             :recently-successful="recentlySuccessful"
-          ></slot>
+          />
         </div>
       </base-form>
     </div>

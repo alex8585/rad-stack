@@ -1,6 +1,6 @@
 <template>
   <select @input="onFilter">
-    <option value=""></option>
+    <option value="" />
     <option
       v-for="option in getChoices"
       :key="option.value"

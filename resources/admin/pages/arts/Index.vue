@@ -30,7 +30,7 @@
               color="grey"
               icon="edit"
               @click="editRow(params)"
-            ></q-btn>
+            />
             <q-btn
               dense
               round
@@ -38,7 +38,7 @@
               color="grey"
               icon="delete"
               @click="deleteConfirm(params)"
-            ></q-btn>
+            />
           </q-td>
         </template>
       </q-table>
@@ -66,16 +66,16 @@
             icon="close"
             class="float-right"
             color="grey-8"
-          ></q-btn>
+          />
           <div class="text-h6">Create Art</div>
         </q-card-section>
-        <q-separator inset></q-separator>
+        <q-separator inset />
         <q-card-section class="q-pt-none">
           <q-form class="q-gutter-md">
             <q-list>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Title</q-item-label>
+                  <q-item-label class="q-pb-xs"> Title </q-item-label>
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
@@ -91,7 +91,7 @@
                     ref="createArtUploadInputRef"
                     :multiple="true"
                     @change="uploadInputChangeHandler"
-                  ></UploadInput>
+                  />
                 </q-item-section>
               </q-item>
             </q-list>
@@ -99,13 +99,13 @@
         </q-card-section>
         <q-card-section>
           <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary"></q-btn>
+            <q-btn v-close-popup flat label="Cancel" color="primary" />
             <q-btn
               v-close-popup
               label="Save"
               color="primary"
               @click="createRow"
-            ></q-btn>
+            />
           </q-card-actions>
         </q-card-section>
       </q-card>
@@ -122,16 +122,16 @@
             icon="close"
             class="float-right"
             color="grey-8"
-          ></q-btn>
+          />
           <div class="text-h6">Update Art</div>
         </q-card-section>
-        <q-separator inset></q-separator>
+        <q-separator inset />
         <q-card-section class="q-pt-none">
           <q-form class="q-gutter-md">
             <q-list>
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs">Title</q-item-label>
+                  <q-item-label class="q-pb-xs"> Title </q-item-label>
                   <q-input v-model="rowForm.title" filled />
                 </q-item-section>
               </q-item>
@@ -149,7 +149,7 @@
                     :multiple="true"
                     :init-files="rowForm.files"
                     @change="uploadInputChangeHandler"
-                  ></UploadInput>
+                  />
                 </q-item-section>
               </q-item>
             </q-list>
@@ -157,13 +157,13 @@
         </q-card-section>
         <q-card-section>
           <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary"></q-btn>
+            <q-btn v-close-popup flat label="Cancel" color="primary" />
             <q-btn
               v-close-popup
               label="Save"
               color="primary"
               @click="updateRow"
-            ></q-btn>
+            />
           </q-card-actions>
         </q-card-section>
       </q-card>

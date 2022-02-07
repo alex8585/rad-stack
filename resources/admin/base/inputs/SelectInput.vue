@@ -1,5 +1,7 @@
 <template>
-  <input-label :for="id" class="mb-1">{{ getLabel }}</input-label>
+  <input-label :for="id" class="mb-1">
+    {{ getLabel }}
+  </input-label>
   <select
     v-bind="$attrs"
     :id="id"

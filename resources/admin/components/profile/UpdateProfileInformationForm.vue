@@ -8,7 +8,9 @@
     }"
     :item="user"
   >
-    <template #title> {{ $t('Profile Information') }} </template>
+    <template #title>
+      {{ $t('Profile Information') }}
+    </template>
 
     <template #description>
       {{ $t("Update your account's profile information and email address.") }}

@@ -11,11 +11,11 @@
         @change="change"
       />
       <!-- line -->
-      <div class="bg-toggle block bg-gray-400 w-10 h-6 rounded-full"></div>
+      <div class="bg-toggle block bg-gray-400 w-10 h-6 rounded-full" />
       <!-- dot -->
       <div
         class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform"
-      ></div>
+      />
     </div>
     <!-- label -->
     <div v-if="label" class="ml-2 text-gray-700 text-sm font-medium">

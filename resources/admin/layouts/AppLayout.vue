@@ -25,7 +25,7 @@
                   {{ $t('Profile') }}
                 </dropdown-link>
 
-                <div class="border-t border-gray-100"></div>
+                <div class="border-t border-gray-100" />
 
                 <!-- Authentication -->
                 <dropdown-link
@@ -68,7 +68,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
       <q-list>
-        <q-item-label header> Menu</q-item-label>
+        <q-item-label header> Menu </q-item-label>
 
         <div v-for="(link, i) in mainNav" :key="i" class="mb-4 group">
           <!--  <inertia-link
@@ -111,7 +111,7 @@
 
     <q-page-container>
       <main class="px-4 py-8 md:p-8">
-        <slot></slot>
+        <slot />
       </main>
     </q-page-container>
   </q-layout>

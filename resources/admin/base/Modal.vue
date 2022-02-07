@@ -19,7 +19,7 @@
             class="fixed inset-0 transform transition-all"
             @click="close"
           >
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div class="absolute inset-0 bg-gray-500 opacity-75" />
           </div>
         </transition>
 
@@ -36,7 +36,7 @@
             class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
             :class="maxWidthClass"
           >
-            <slot v-if="show"></slot>
+            <slot v-if="show" />
           </div>
         </transition>
       </div>

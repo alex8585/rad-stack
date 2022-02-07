@@ -24,14 +24,14 @@ Besides all code is heavily linted from top to bottom thanks to **PHP CS Fixer**
 
 ## Technologies involved
 
-- **Laravel 8** and **PHP 8.0** as minimum requirement. It allows usage of **PHP attributes** which is perfect for routing definitions directly inside controllers as Symfony does.
-- Usage of **[Vite](https://vitejs.dev/)** as main frontend tooling for instant start and HMR development thanks to modern [esbuild bundler](https://github.com/evanw/esbuild) with proper Laravel manifest management for dev and production.
-- **[Windi CSS](https://windicss.org/)** as main CSS framework for both front and admin parts.
-- Front is empty but ready to go for full **Livewire + AlpineJS** integration. Perfect for SEO based websites. It's configured for Windi CSS and Typescript but you can easily switch to another tools.
-- Basic admin UI fully build with **[Inertia](https://inertiajs.com/) + Windi CSS + Vue 3 Typescript with composition API**. Give thanks to Inertia for get ridding of boring Vue Router boilerplate and typescript for instant IDE feedbacks !
-- Usage of last **[SFC script setup](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup)** syntax since **Vue 3.2**. This syntax become similar to **Svelte** framework for even less code.
-- Backend is tested by using **[Pest](https://pestphp.com/)** testing framework, which gives you a perfect starting dev point if you want to embrace **TDD**.
-- **[GrumPHP](https://github.com/phpro/grumphp)** is preinstalled in order to automatize code formatting and testing before each commits. Use `vendor/bin/grumphp git:init` for auto register his git hooks commands.
+-   **Laravel 8** and **PHP 8.0** as minimum requirement. It allows usage of **PHP attributes** which is perfect for routing definitions directly inside controllers as Symfony does.
+-   Usage of **[Vite](https://vitejs.dev/)** as main frontend tooling for instant start and HMR development thanks to modern [esbuild bundler](https://github.com/evanw/esbuild) with proper Laravel manifest management for dev and production.
+-   **[Windi CSS](https://windicss.org/)** as main CSS framework for both front and admin parts.
+-   Front is empty but ready to go for full **Livewire + AlpineJS** integration. Perfect for SEO based websites. It's configured for Windi CSS and Typescript but you can easily switch to another tools.
+-   Basic admin UI fully build with **[Inertia](https://inertiajs.com/) + Windi CSS + Vue 3 Typescript with composition API**. Give thanks to Inertia for get ridding of boring Vue Router boilerplate and typescript for instant IDE feedbacks !
+-   Usage of last **[SFC script setup](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup)** syntax since **Vue 3.2**. This syntax become similar to **Svelte** framework for even less code.
+-   Backend is tested by using **[Pest](https://pestphp.com/)** testing framework, which gives you a perfect starting dev point if you want to embrace **TDD**.
+-   **[GrumPHP](https://github.com/phpro/grumphp)** is preinstalled in order to automatize code formatting and testing before each commits. Use `vendor/bin/grumphp git:init` for auto register his git hooks commands.
 
 ### Why Windi CSS ?
 
@@ -41,41 +41,41 @@ It's fully written in Typescript and 100% compatible with Tailwind 2.x API. It h
 
 Only simple basic features :
 
-- Empty and easily removable front part, prepared with **Livewire and AlpineJS**.
-- Dynamic on-demand image resizing via **Glide** with `$media->glide(['w' => 10, 'h' => 10, 'method' => 'fit'])->getUrl()`.
-- Admin UI Layout with all **basic auth pages** (login / register / reset password / profile), **users management with impersonation** and **basic posts crud management**. All credits goes to [Laravel Jetstream](https://jetstream.laravel.com) and [Ping CRM](https://github.com/inertiajs/pingcrm).
-- Clear separation between front and admin parts, with dedicated folders for controllers and resources and separated Vite configs. It's really simple to remove front part if you need only admin for CRM based application. **CSS purge and production builds** are properly configured for each front and admin part.
-- **Admin RAD lightweight framework** similar to [React Admin](https://marmelab.com/react-admin/) with ready to use **crud pages**, **data table**, **fields** and **form inputs**. **Quick aside panel** view/edit with real inertia routing context is also supported and actually used for users management in this boilerplate !
-- Extensible **DataTable** component with **paging**, **sorting**, **global search**, **by column filter**, **template columns**, **customizable row actions**, **excel export** features. All that with efficient and nice dev API !
-- Advanced **BaseForm** proxy provider. No need for `v-model` on each field, just use unique `source` prop.
+-   Empty and easily removable front part, prepared with **Livewire and AlpineJS**.
+-   Dynamic on-demand image resizing via **Glide** with `$media->glide(['w' => 10, 'h' => 10, 'method' => 'fit'])->getUrl()`.
+-   Admin UI Layout with all **basic auth pages** (login / register / reset password / profile), **users management with impersonation** and **basic posts crud management**. All credits goes to [Laravel Jetstream](https://jetstream.laravel.com) and [Ping CRM](https://github.com/inertiajs/pingcrm).
+-   Clear separation between front and admin parts, with dedicated folders for controllers and resources and separated Vite configs. It's really simple to remove front part if you need only admin for CRM based application. **CSS purge and production builds** are properly configured for each front and admin part.
+-   **Admin RAD lightweight framework** similar to [React Admin](https://marmelab.com/react-admin/) with ready to use **crud pages**, **data table**, **fields** and **form inputs**. **Quick aside panel** view/edit with real inertia routing context is also supported and actually used for users management in this boilerplate !
+-   Extensible **DataTable** component with **paging**, **sorting**, **global search**, **by column filter**, **template columns**, **customizable row actions**, **excel export** features. All that with efficient and nice dev API !
+-   Advanced **BaseForm** proxy provider. No need for `v-model` on each field, just use unique `source` prop.
 
 ### Backend packages used
 
-- [Laravel Fortify](https://github.com/laravel/fortify) for ready to used backend authentication endpoints.
-- [Spatie Route Attributes](https://github.com/spatie/laravel-route-attributes) for direct routes definition inside controllers. No more heavy routes files !
-- [Ziggy](https://github.com/tighten/ziggy) for Laravel routes names definitions accessible from client side.
-- [Matice](https://github.com/GENL/matice) for nice Laravel translations integration within client side.
-- [Laravel Excel](https://laravel-excel.com/) as perfect solution for data table Excel export.
-- [Spatie Laravel Enum](https://github.com/spatie/laravel-enum) for proper enum support.
-- [Spatie Query Builder](https://github.com/spatie/laravel-query-builder) as nice Eloquent builder for API REST resources browsing, totally bridged inside above DataTable component.
-- [Glide](https://glide.thephpleague.com/) for dynamic image resizing.
+-   [Laravel Fortify](https://github.com/laravel/fortify) for ready to used backend authentication endpoints.
+-   [Spatie Route Attributes](https://github.com/spatie/laravel-route-attributes) for direct routes definition inside controllers. No more heavy routes files !
+-   [Ziggy](https://github.com/tighten/ziggy) for Laravel routes names definitions accessible from client side.
+-   [Matice](https://github.com/GENL/matice) for nice Laravel translations integration within client side.
+-   [Laravel Excel](https://laravel-excel.com/) as perfect solution for data table Excel export.
+-   [Spatie Laravel Enum](https://github.com/spatie/laravel-enum) for proper enum support.
+-   [Spatie Query Builder](https://github.com/spatie/laravel-query-builder) as nice Eloquent builder for API REST resources browsing, totally bridged inside above DataTable component.
+-   [Glide](https://glide.thephpleague.com/) for dynamic image resizing.
 
 ## Dev tools for high QA
 
 ### Backend dev tools
 
-- [Clockwork](https://github.com/itsgoingd/clockwork) for advanced profiling with debug bar and frontend metrics (**web vitals**) enabled. Can show **N+1 query** problems.
-- [Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper) for proper autocompletion, compatible with PHPStorm and VSCode Intelephense
-- [PHP CS Fixer 3](friendsofphp/php-cs-fixer) configured for Laravel default styling.
-- [Larastan](https://github.com/nunomaduro/larastan) for static PHP code analysis.
-- [Pest](https://pestphp.com/) as enjoyable testing API.
+-   [Clockwork](https://github.com/itsgoingd/clockwork) for advanced profiling with debug bar and frontend metrics (**web vitals**) enabled. Can show **N+1 query** problems.
+-   [Laravel IDE Helper](https://github.com/barryvdh/laravel-ide-helper) for proper autocompletion, compatible with PHPStorm and VSCode Intelephense
+-   [PHP CS Fixer 3](friendsofphp/php-cs-fixer) configured for Laravel default styling.
+-   [Larastan](https://github.com/nunomaduro/larastan) for static PHP code analysis.
+-   [Pest](https://pestphp.com/) as enjoyable testing API.
 
 ### Frontend dev tools
 
-- **Prettier** as opinionated code formatting and **Eslint** for proper typescript linting
-- Full **Vue template typescript support** thanks to Johnson Chu's incredible work via his [Volar plugin](https://github.com/johnsoncodehk/volar). You finally now have typescript lint everywhere as Angular does with full VScode support !
-- [Vite auto component register](https://github.com/antfu/vite-plugin-components) while keeping typescript props inferring functional !
-- [Jest](https://jestjs.io/) ready to use for client side component / typescript unit testing. Note that unlike backend side there is no client unit tests provided to this boilerplate.
+-   **Prettier** as opinionated code formatting and **Eslint** for proper typescript linting
+-   Full **Vue template typescript support** thanks to Johnson Chu's incredible work via his [Volar plugin](https://github.com/johnsoncodehk/volar). You finally now have typescript lint everywhere as Angular does with full VScode support !
+-   [Vite auto component register](https://github.com/antfu/vite-plugin-components) while keeping typescript props inferring functional !
+-   [Jest](https://jestjs.io/) ready to use for client side component / typescript unit testing. Note that unlike backend side there is no client unit tests provided to this boilerplate.
 
 ## Usage
 
@@ -133,14 +133,14 @@ VITE_DEV_SERVER_HOST=wsl.host
 
 The essential plugins :
 
-- [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
-- [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) > Don't forget to add `.php-cs-fixer.dist.php` file as config file.
-- [PHPStan](https://github.com/swordev/phpstan-vscode) for realtime static analysis feedback per file.
-- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-- [Eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [WindiCSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=voorjaar.windicss-intellisense)
-- [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) for realtime typescript feedback inside your templates > You should disable vetur in order to avoid conflicts.
-- [Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) for inlined errors.
+-   [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
+-   [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) > Don't forget to add `.php-cs-fixer.dist.php` file as config file.
+-   [PHPStan](https://github.com/swordev/phpstan-vscode) for realtime static analysis feedback per file.
+-   [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+-   [Eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+-   [WindiCSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=voorjaar.windicss-intellisense)
+-   [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) for realtime typescript feedback inside your templates > You should disable vetur in order to avoid conflicts.
+-   [Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) for inlined errors.
 
 ### Available QA scripts
 

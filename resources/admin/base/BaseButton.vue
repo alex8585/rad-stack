@@ -17,7 +17,7 @@
       :only="only"
       @click.stop="$emit('click')"
     >
-      <spinner
+      <admin-spinner
         v-if="loading"
         class="-ml-1 h-4 w-4 text-white"
         :class="{
@@ -34,7 +34,7 @@
           '-ml-2 -mr-2': !hasLabel,
         }"
       />
-      <slot v-if="hasLabel"></slot>
+      <slot v-if="hasLabel" />
     </component>
     <button
       v-if="split"

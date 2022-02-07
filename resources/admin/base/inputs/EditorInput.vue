@@ -6,7 +6,7 @@
     api-key="no-api-key"
     :init="init"
     class="hidden"
-  ></editor>
+  />
   <input-error :message="getError" class="mt-2" />
   <input-hint :message="hint" class="mt-2" />
 </template>

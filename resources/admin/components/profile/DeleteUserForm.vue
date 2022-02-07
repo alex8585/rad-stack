@@ -1,6 +1,8 @@
 <template>
   <action-section>
-    <template #title> {{ $t('Delete Account') }} </template>
+    <template #title>
+      {{ $t('Delete Account') }}
+    </template>
 
     <template #description>
       {{ $t('Permanently delete your account.') }}
@@ -38,7 +40,9 @@
         :show="confirmingUserDeletion"
         @close="closeModal"
       >
-        <template #title> {{ $t('Delete Account') }} </template>
+        <template #title>
+          {{ $t('Delete Account') }}
+        </template>
 
         <template #content>
           {{
