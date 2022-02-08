@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Queries\UserQuery;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
-use App\Http\Resources\Admin\UserResource;
 use App\Http\Responses\LoginResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,45 +22,22 @@ use Spatie\RouteAttributes\Attributes\Put;
 class UserController extends Controller
 {
     #[Get('/', name: 'users')]
-    public function index()
+    public function index(UserQuery $query)
     {
-        return app(UserQuery::class)->make()
-            ->paginateOrExport(fn ($data) => Inertia::render('users/Index', ['action' => 'list'] + $data))
-        ;
-    }
 
-    #[Get('create', name: 'users.create')]
-    public function create()
-    {
-        return Inertia::render('users/Index', [
-            'action' => 'create',
-        ] + app(UserQuery::class)->make()->get());
-    }
-
-    #[Get('{user}', name: 'users.show')]
-    public function show(User $user)
-    {
-        return Inertia::render('users/Index', [
-            'action' => 'show',
-            'user' => UserResource::make($user),
-        ] + app(UserQuery::class)->make()->get());
-    }
-
-    #[Get('{user}/edit', name: 'users.edit')]
-    public function edit(User $user)
-    {
-        return Inertia::render('users/Index', [
-            'action' => 'edit',
-            'user' => UserResource::make($user),
-        ] + app(UserQuery::class)->make()->get());
+        /* $t = collect($rolesArr)->flatMap( function($k,$v)  { return  [[ 'label' => $k, 'value'=>$v]] ; } )->all(); */
+        return $query->paginateOrExport(
+            fn ($data) => Inertia::render('users/Index', $data)
+        );
     }
 
     #[Post('/', name: 'users.store')]
     public function store(UserStoreRequest $request)
     {
+        /* dd($request->all()); */
         User::create($request->all());
 
-        return redirect()->route('admin.users')->with('flash.success', __('User created.'));
+        return back()->with('success', 'The User has been stored');
     }
 
     #[Put('{user}', name: 'users.update', middleware: 'can:modify-user,user')]
@@ -69,7 +45,7 @@ class UserController extends Controller
     {
         $user->update($request->all());
 
-        return redirect()->route('admin.users')->with('flash.success', __('User updated.'));
+        return back()->with('success', 'The User has been updated');
     }
 
     #[Patch('{user}/toggle', name: 'users.toggle', middleware: 'can:modify-user,user')]
@@ -89,7 +65,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('admin.users')->with('flash.success', __('User deleted.'));
+        return back()->with('success', 'The User has been deleted');
     }
 
     #[Delete('/', name: 'users.bulk.destroy')]

@@ -172,193 +172,193 @@
 </template>
 
 <script lang="ts" setup>
-  import { Col, ArtRowFormType } from '@admin/types/data-table'
-  import { shorten } from '@admin/functions'
-  import { ref } from 'vue'
-  import { useForm } from '@inertiajs/inertia-vue3'
-  import { useQuasar } from 'quasar'
-  import { Inertia } from '@inertiajs/inertia'
-  const $q = useQuasar()
+import { Col, ArtRowFormType } from '@admin/types/data-table'
+import { shorten } from '@admin/functions'
+import { ref } from 'vue'
+import { useForm } from '@inertiajs/inertia-vue3'
+import { useQuasar } from 'quasar'
+import { Inertia } from '@inertiajs/inertia'
+const $q = useQuasar()
 
-  let props = defineProps({
-    action: String,
-    items: Array,
-    sortBy: String,
-    filter: Object,
-    perPage: Number,
-    total: Number,
-    currentPage: Number,
+let props = defineProps({
+  action: String,
+  items: Array,
+  sortBy: String,
+  filter: Object,
+  perPage: Number,
+  total: Number,
+  currentPage: Number,
+})
+
+const columns: Array<Col> = [
+  {
+    name: 'id',
+    required: true,
+    label: 'ID',
+    align: 'left',
+    field: (row) => row.id,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'title',
+    align: 'left',
+    label: 'Title',
+    field: 'title',
+    format: (val) => shorten(val, 3, ''),
+    sortable: true,
+  },
+  {
+    align: 'left',
+    name: 'description',
+    label: 'Description',
+    field: 'description',
+    format: (val) => shorten(val, 5),
+    sortable: true,
+  },
+  {
+    name: 'thumb',
+    sortable: false,
+    label: 'Img',
+    field: 'thumb',
+    align: 'center',
+  },
+
+  {
+    name: 'actions',
+    sortable: false,
+    label: 'Actions',
+    field: '',
+    align: 'center',
+  },
+]
+
+const pagination = ref({
+  sortBy: 'id',
+  descending: false,
+  page: props.currentPage!,
+  rowsPerPage: props.perPage,
+  rowsNumber: props.total,
+})
+
+const form = useForm({
+  page: props.currentPage,
+  perPage: props.perPage,
+  sortBy: props.sortBy,
+  descending: 0,
+  filter: {},
+})
+
+const initRowForm: ArtRowFormType = {
+  files: [],
+  title: null,
+  description: '',
+  id: null,
+}
+const rowForm = useForm(initRowForm)
+
+const showEditDialog = ref(false)
+const showCreateDialog = ref(false)
+const loading = ref(false)
+const createArtUploadInputRef = ref(null)
+
+/* watchEffect(() => { */
+/*       }) */
+
+let totalCount = props.total!
+let pageSize = props.perPage!
+let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
+
+function uploadInputChangeHandler(files) {
+  rowForm.files = files
+}
+
+function createDialog() {
+  rowForm.files = []
+  rowForm.reset()
+  showCreateDialog.value = true
+}
+
+async function editRow(params) {
+  let { row } = params
+  showEditDialog.value = true
+  rowForm.title = row.title
+  rowForm.description = row.description
+  rowForm.id = row.id
+  rowForm.files = []
+
+  for (const image of row.media) {
+    let response = await fetch(image.original_url)
+    let data = await response.blob()
+    let file = new File([data], image.name, {})
+    rowForm.files.push(file)
+  }
+}
+
+function updateRow() {
+  rowForm.post(`/admin/arts/${rowForm.id}`, {
+    preserveState: true,
+    onSuccess: () => rowForm.reset(),
   })
+}
 
-  const columns: Array<Col> = [
-    {
-      name: 'id',
-      required: true,
-      label: 'ID',
-      align: 'left',
-      field: (row) => row.id,
-      format: (val) => `${val}`,
-      sortable: true,
-    },
-    {
-      name: 'title',
-      align: 'left',
-      label: 'Title',
-      field: 'title',
-      format: (val) => shorten(val, 3, ''),
-      sortable: true,
-    },
-    {
-      align: 'left',
-      name: 'description',
-      label: 'Description',
-      field: 'description',
-      format: (val) => shorten(val, 5),
-      sortable: true,
-    },
-    {
-      name: 'thumb',
-      sortable: false,
-      label: 'Img',
-      field: 'thumb',
-      align: 'center',
-    },
-
-    {
-      name: 'actions',
-      sortable: false,
-      label: 'Actions',
-      field: '',
-      align: 'center',
-    },
-  ]
-
-  const pagination = ref({
-    sortBy: 'id',
-    descending: false,
-    page: props.currentPage!,
-    rowsPerPage: props.perPage,
-    rowsNumber: props.total,
+function createRow() {
+  rowForm.id = null
+  rowForm.post(`/admin/arts/`, {
+    preserveState: false,
   })
+}
 
-  const form = useForm({
-    page: props.currentPage,
-    perPage: props.perPage,
-    sortBy: props.sortBy,
-    descending: 0,
-    filter: {},
+function deleteConfirm(params) {
+  $q.dialog({
+    title: 'Delete confirmation',
+    message: 'Are you sure you want to delete this item?',
+    cancel: true,
+  }).onOk(() => {
+    deleteRow(params)
   })
+}
 
-  const initRowForm: ArtRowFormType = {
-    files: [],
-    title: null,
-    description: '',
-    id: null,
-  }
-  const rowForm = useForm(initRowForm)
+function deleteRow(params) {
+  let { row } = params
+  Inertia.delete(`/admin/arts/${row.id}`, {
+    preserveState: false,
+  })
+}
 
-  const showEditDialog = ref(false)
-  const showCreateDialog = ref(false)
-  const loading = ref(false)
-  const createArtUploadInputRef = ref(null)
+function onPagination(page: string) {
+  let curPage = parseInt(page)
+  pagination.value.page = curPage
+  form.page = curPage
+  doQuery()
+}
 
-  /* watchEffect(() => { */
-  /*       }) */
+function onSort(params) {
+  const { sortBy } = params.pagination
 
-  let totalCount = props.total!
-  let pageSize = props.perPage!
-  let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
+  pagination.value.descending = !pagination.value.descending
 
-  function uploadInputChangeHandler(files) {
-    rowForm.files = files
-  }
-
-  function createDialog() {
-    rowForm.files = []
-    rowForm.reset()
-    showCreateDialog.value = true
+  if (sortBy) {
+    pagination.value.sortBy = sortBy
+    form.sortBy = sortBy
   }
 
-  async function editRow(params) {
-    let { row } = params
-    showEditDialog.value = true
-    rowForm.title = row.title
-    rowForm.description = row.description
-    rowForm.id = row.id
-    rowForm.files = []
+  form.descending = pagination.value.descending ? 1 : 0
+  doQuery()
+}
 
-    for (const image of row.media) {
-      let response = await fetch(image.original_url)
-      let data = await response.blob()
-      let file = new File([data], image.name, {})
-      rowForm.files.push(file)
-    }
-  }
-
-  function updateRow() {
-    rowForm.post(`/admin/arts/${rowForm.id}`, {
-      preserveState: true,
-      onSuccess: () => rowForm.reset(),
-    })
-  }
-
-  function createRow() {
-    rowForm.id = null
-    rowForm.post(`/admin/arts/`, {
-      preserveState: false,
-    })
-  }
-
-  function deleteConfirm(params) {
-    $q.dialog({
-      title: 'Delete confirmation',
-      message: 'Are you sure you want to delete this item?',
-      cancel: true,
-    }).onOk(() => {
-      deleteRow(params)
-    })
-  }
-
-  function deleteRow(params) {
-    let { row } = params
-    Inertia.delete(`/admin/arts/${row.id}`, {
-      preserveState: false,
-    })
-  }
-
-  function onPagination(page: string) {
-    let curPage = parseInt(page)
-    pagination.value.page = curPage
-    form.page = curPage
-    doQuery()
-  }
-
-  function onSort(params) {
-    const { sortBy } = params.pagination
-
-    pagination.value.descending = !pagination.value.descending
-
-    if (sortBy) {
-      pagination.value.sortBy = sortBy
-      form.sortBy = sortBy
-    }
-
-    form.descending = pagination.value.descending ? 1 : 0
-    doQuery()
-  }
-
-  const doQuery = () => {
-    loading.value = true
-    form.get(location.pathname, {
-      preserveState: true,
-      onSuccess: () => {
-        loading.value = false
-      },
-    })
-  }
+const doQuery = () => {
+  loading.value = true
+  form.get(location.pathname, {
+    preserveState: true,
+    onSuccess: () => {
+      loading.value = false
+    },
+  })
+}
 </script>
 <style>
-  [for='file2'] {
-    cursor: pointer;
-  }
+[for='file2'] {
+  cursor: pointer;
+}
 </style>

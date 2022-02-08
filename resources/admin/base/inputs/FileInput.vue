@@ -30,37 +30,37 @@
 </template>
 
 <script lang="ts" setup>
-  import { inputProps, inputSetup } from '@admin/mixins/input'
-  import set from 'lodash/set'
-  import isEmpty from 'lodash/isEmpty'
-  import { computed } from 'vue'
+import { inputProps, inputSetup } from '@admin/mixins/input'
+import set from 'lodash/set'
+import isEmpty from 'lodash/isEmpty'
+import { computed } from 'vue'
 
-  const props = defineProps({
-    ...inputProps,
-    fileSource: String,
-    deleteSource: String,
-    delete: Boolean,
-    multiple: Boolean,
-    preview: Boolean,
-  })
+const props = defineProps({
+  ...inputProps,
+  fileSource: String,
+  deleteSource: String,
+  delete: Boolean,
+  multiple: Boolean,
+  preview: Boolean,
+})
 
-  const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 
-  const { getLabel, getError, hasError, id, getName, getInitialValue, form } =
-    inputSetup(props, emit)
+const { getLabel, getError, hasError, id, getName, getInitialValue, form } =
+  inputSetup(props, emit)
 
-  const hasFile = computed(() => {
-    return !isEmpty(getInitialValue.value)
-  })
+const hasFile = computed(() => {
+  return !isEmpty(getInitialValue.value)
+})
 
-  const onChange = (e: Event) => {
-    set(form!.data, props.deleteSource!, (e.target as HTMLInputElement).checked)
+const onChange = (e: Event) => {
+  set(form!.data, props.deleteSource!, (e.target as HTMLInputElement).checked)
+}
+
+const onFileChange = (e: Event & { dataTransfer?: DataTransfer }) => {
+  const files = (e.target as HTMLInputElement).files || e.dataTransfer?.files
+  if (files?.length) {
+    set(form!.data, props.fileSource!, props.multiple ? files : files[0])
   }
-
-  const onFileChange = (e: Event & { dataTransfer?: DataTransfer }) => {
-    const files = (e.target as HTMLInputElement).files || e.dataTransfer?.files
-    if (files?.length) {
-      set(form!.data, props.fileSource!, props.multiple ? files : files[0])
-    }
-  }
+}
 </script>

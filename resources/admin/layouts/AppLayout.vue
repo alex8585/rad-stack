@@ -118,42 +118,42 @@
 </template>
 
 <script>
-  import { ref } from 'vue'
-  import { mainNav, isTitle, isLink } from '@admin/_nav'
+import { ref } from 'vue'
+import { mainNav, isTitle, isLink } from '@admin/_nav'
 
-  import { Inertia } from '@inertiajs/inertia'
-  export default {
-    name: 'MyLayout',
-    setup() {
-      const leftDrawerOpen = ref(false)
-      function toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+import { Inertia } from '@inertiajs/inertia'
+export default {
+  name: 'MyLayout',
+  setup() {
+    const leftDrawerOpen = ref(false)
+    function toggleLeftDrawer() {
+      leftDrawerOpen.value = !leftDrawerOpen.value
+    }
 
-      function logout() {
-        Inertia.post(route('logout'))
-      }
+    function logout() {
+      Inertia.post(route('logout'))
+    }
 
-      return {
-        leftDrawerOpen,
-        toggleLeftDrawer,
-        mainNav,
-        isTitle,
-        isLink,
-        logout,
-      }
-    },
-  }
+    return {
+      leftDrawerOpen,
+      toggleLeftDrawer,
+      mainNav,
+      isTitle,
+      isLink,
+      logout,
+    }
+  },
+}
 </script>
 
 <style lang="postcss" scoped>
-  a {
-    &:hover {
-      background-color: #dfdfdf !important;
-    }
-
-    &.active {
-      background-color: #dfdfdf !important;
-    }
+a {
+  &:hover {
+    background-color: #dfdfdf !important;
   }
+
+  &.active {
+    background-color: #dfdfdf !important;
+  }
+}
 </style>

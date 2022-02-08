@@ -49,41 +49,41 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, watch } from 'vue'
-  import { usePage } from '@inertiajs/inertia-vue3'
+import { computed, ref, watch } from 'vue'
+import { usePage } from '@inertiajs/inertia-vue3'
 
-  const show = ref(true)
+const show = ref(true)
 
-  const flash = computed(() => {
-    return usePage().props.value.flash
-  })
+const flash = computed(() => {
+  return usePage().props.value.flash
+})
 
-  const style = computed(() => {
-    return flash.value?.danger
-      ? 'danger'
-      : flash.value?.warning
-      ? 'warning'
-      : 'success'
-  })
+const style = computed(() => {
+  return flash.value?.danger
+    ? 'danger'
+    : flash.value?.warning
+    ? 'warning'
+    : 'success'
+})
 
-  const icon = computed(() => {
-    const v: 'success' | 'warning' | 'danger' = style.value
+const icon = computed(() => {
+  const v: 'success' | 'warning' | 'danger' = style.value
 
-    return {
-      success: 'check-circle',
-      warning: 'exclamation',
-      danger: 'x-circle',
-    }[v]
-  })
+  return {
+    success: 'check-circle',
+    warning: 'exclamation',
+    danger: 'x-circle',
+  }[v]
+})
 
-  const message = computed(() => {
-    return flash.value[style.value]
-  })
+const message = computed(() => {
+  return flash.value[style.value]
+})
 
-  watch(
-    () => usePage().props.value.flash,
-    () => {
-      show.value = true
-    }
-  )
+watch(
+  () => usePage().props.value.flash,
+  () => {
+    show.value = true
+  }
+)
 </script>

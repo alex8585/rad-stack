@@ -33,6 +33,14 @@ export interface TagRowFormType {
   order_number: string
   id?: number | null
 }
+export interface UserRowFormType {
+  name?: string | null
+  email: string
+  id?: number | null
+  password?: string | null
+  active?: string | null
+  role?: string | null
+}
 export interface OptionType {
   label: string
   value: number

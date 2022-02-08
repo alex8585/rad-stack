@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-  defineProps({
-    value: {
-      type: Object,
-      required: true,
-    },
-    text: String,
-    resource: String,
-    link: String,
-  })
+defineProps({
+  value: {
+    type: Object,
+    required: true,
+  },
+  text: String,
+  resource: String,
+  link: String,
+})
 </script>

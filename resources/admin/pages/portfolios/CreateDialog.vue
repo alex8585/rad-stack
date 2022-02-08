@@ -67,85 +67,85 @@
   </q-dialog>
 </template>
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue'
-  import { useForm } from '@inertiajs/inertia-vue3'
+import { ref, onMounted } from 'vue'
+import { useForm } from '@inertiajs/inertia-vue3'
 
-  import {
-    OptionType,
-    TagType,
-    PortfolioRowFormType,
-  } from '@admin/types/data-table'
+import {
+  OptionType,
+  TagType,
+  PortfolioRowFormType,
+} from '@admin/types/data-table'
 
-  const props = defineProps({
-    tags: {
-      default: () => [],
-      type: Array,
-    },
-    initValues: {
-      default: () => [],
-      type: Array,
-    },
-    show: {
-      default: false,
-      type: Boolean,
-    },
-  })
+const props = defineProps({
+  tags: {
+    default: () => [],
+    type: Array,
+  },
+  initValues: {
+    default: () => [],
+    type: Array,
+  },
+  show: {
+    default: false,
+    type: Boolean,
+  },
+})
 
-  let options: Array<OptionType> = []
+let options: Array<OptionType> = []
 
-  function uploadInputChangeHandler(files) {
-    form.files = files
-  }
+function uploadInputChangeHandler(files) {
+  form.files = files
+}
 
-  const emit = defineEmits(['change', 'mount', 'send'])
+const emit = defineEmits(['change', 'mount', 'send'])
 
-  const isShow = ref(false)
-  const ititForm: PortfolioRowFormType = {
-    name: null,
-    url: null,
-    order_number: '',
-    id: null,
-    files: [],
-    tags: [],
-  }
+const isShow = ref(false)
+const ititForm: PortfolioRowFormType = {
+  name: null,
+  url: null,
+  order_number: '',
+  id: null,
+  files: [],
+  tags: [],
+}
 
-  const form = useForm(ititForm)
+const form = useForm(ititForm)
 
-  function onSend() {
-    emit('send', form)
-  }
+function onSend() {
+  emit('send', form)
+}
 
-  onMounted(() => {
-    isShow.value = props.show
-    for (const tag of props.tags as Array<TagType>) {
-      let option = {
-        label: tag.name,
-        value: tag.id,
-      }
-      options.push(option)
+onMounted(() => {
+  isShow.value = props.show
+  for (const tag of props.tags as Array<TagType>) {
+    let option = {
+      label: tag.name,
+      value: tag.id,
     }
-    emit('mount')
-  })
-
-  function set(row) {
-    for (const key in row) {
-      form[key] = row[key]
-    }
+    options.push(option)
   }
+  emit('mount')
+})
 
-  function reset() {
-    set(ititForm)
-    emit('change', form)
+function set(row) {
+  for (const key in row) {
+    form[key] = row[key]
   }
+}
 
-  function show() {
-    reset()
-    form.files = []
-    isShow.value = true
-  }
+function reset() {
+  set(ititForm)
+  emit('change', form)
+}
 
-  defineExpose({
-    reset,
-    show,
-  })
+function show() {
+  reset()
+  form.files = []
+  isShow.value = true
+}
+
+defineExpose({
+  reset,
+  show,
+})
 </script>

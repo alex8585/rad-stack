@@ -25,26 +25,26 @@
 </template>
 
 <script lang="ts" setup>
-  import {} from 'vue'
+import {} from 'vue'
 
-  defineProps({
-    modelValue: Boolean,
-    label: String,
-  })
+defineProps({
+  modelValue: Boolean,
+  label: String,
+})
 
-  const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 
-  const change = (e: Event) => {
-    emit('update:modelValue', (e.target as HTMLInputElement).checked)
-  }
+const change = (e: Event) => {
+  emit('update:modelValue', (e.target as HTMLInputElement).checked)
+}
 </script>
 
 <style lang="postcss" scoped>
-  input:checked ~ .dot {
-    @apply translate-x-4;
-  }
+input:checked ~ .dot {
+  @apply translate-x-4;
+}
 
-  input:checked ~ .bg-toggle {
-    @apply bg-primary-500;
-  }
+input:checked ~ .bg-toggle {
+  @apply bg-primary-500;
+}
 </style>

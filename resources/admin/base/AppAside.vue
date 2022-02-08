@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject } from 'vue'
+import { inject } from 'vue'
 
-  defineProps({
-    title: String,
-  })
+defineProps({
+  title: String,
+})
 
-  const resource = inject<string>('resource')
+const resource = inject<string>('resource')
 </script>

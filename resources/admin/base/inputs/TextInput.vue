@@ -25,26 +25,26 @@
 </template>
 
 <script lang="ts" setup>
-  import { Ref, ref } from 'vue'
-  import { inputProps, inputSetup } from '@admin/mixins/input'
+import { Ref, ref } from 'vue'
+import { inputProps, inputSetup } from '@admin/mixins/input'
 
-  const props = defineProps({
-    ...inputProps,
-    modelValue: String,
-    multiline: Boolean,
-  })
+const props = defineProps({
+  ...inputProps,
+  modelValue: String,
+  multiline: Boolean,
+})
 
-  const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 
-  const input: Ref<HTMLInputElement | null> = ref(null)
-  const { getLabel, formValue, getError, hasError, id, getName } = inputSetup(
-    props,
-    emit
-  )
+const input: Ref<HTMLInputElement | null> = ref(null)
+const { getLabel, formValue, getError, hasError, id, getName } = inputSetup(
+  props,
+  emit
+)
 
-  const focus = () => {
-    input.value?.focus()
-  }
+const focus = () => {
+  input.value?.focus()
+}
 
-  defineExpose({ focus })
+defineExpose({ focus })
 </script>

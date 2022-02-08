@@ -71,178 +71,178 @@
 </template>
 
 <script lang="ts" setup>
-  import { Col } from '@admin/types/data-table'
-  import { shorten, getPageCount } from '@admin/functions'
-  import { ref } from 'vue'
-  import { useForm } from '@inertiajs/inertia-vue3'
-  import { useQuasar } from 'quasar'
-  import { Inertia } from '@inertiajs/inertia'
-  import CreateDialog from './CreateDialog.vue'
-  import EditDialog from './EditDialog.vue'
-  const $q = useQuasar()
+import { Col } from '@admin/types/data-table'
+import { shorten, getPageCount } from '@admin/functions'
+import { ref } from 'vue'
+import { useForm } from '@inertiajs/inertia-vue3'
+import { useQuasar } from 'quasar'
+import { Inertia } from '@inertiajs/inertia'
+import CreateDialog from './CreateDialog.vue'
+import EditDialog from './EditDialog.vue'
+const $q = useQuasar()
 
-  let props = defineProps({
-    action: String,
-    items: Array,
-    sortBy: String,
-    filter: Object,
-    perPage: Number,
-    total: Number,
-    currentPage: Number,
-    tags: Array,
+let props = defineProps({
+  action: String,
+  items: Array,
+  sortBy: String,
+  filter: Object,
+  perPage: Number,
+  total: Number,
+  currentPage: Number,
+  tags: Array,
+})
+
+const currentUrl = route(route().current())
+let pagesCount = getPageCount(props.total, props.perPage)
+
+const columns: Array<Col> = [
+  {
+    name: 'id',
+    required: true,
+    label: 'ID',
+    align: 'left',
+    field: (row) => row.id,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'name',
+    align: 'left',
+    label: 'Name',
+    field: 'name',
+    format: (val) => shorten(val, 3, ''),
+    sortable: true,
+  },
+  {
+    name: 'order_number',
+    align: 'left',
+    label: 'Order',
+    field: 'order_number',
+    sortable: true,
+  },
+  {
+    name: 'thumb',
+    align: 'left',
+    label: 'Image',
+    field: 'thumb',
+    sortable: false,
+  },
+  {
+    name: 'tags',
+    align: 'left',
+    label: 'Tags',
+    field: 'tags',
+    sortable: false,
+  },
+
+  {
+    name: 'actions',
+    sortable: false,
+    label: 'Actions',
+    field: '',
+    align: 'center',
+  },
+]
+
+const pagination = ref({
+  sortBy: 'id',
+  descending: false,
+  page: props.currentPage!,
+  rowsPerPage: props.perPage,
+  rowsNumber: props.total,
+})
+
+const paginateForm = useForm({
+  page: props.currentPage,
+  perPage: props.perPage,
+  sortBy: props.sortBy,
+  descending: 0,
+  filter: {},
+})
+
+const loading = ref(false)
+const createDialRef = ref()
+const editDialRef = ref()
+
+console.log(props)
+function createDialog() {
+  createDialRef.value.reset()
+  createDialRef.value.show()
+}
+
+function editRow(params) {
+  let { row } = params
+  editDialRef.value.set(row)
+  editDialRef.value.show()
+}
+
+function deleteConfirm(params) {
+  $q.dialog({
+    title: 'Delete confirmation',
+    message: 'Are you sure you want to delete this item?',
+    cancel: true,
+  }).onOk(() => {
+    deleteRow(params)
   })
+}
 
-  const currentUrl = route(route().current())
-  let pagesCount = getPageCount(props.total, props.perPage)
+function createSendHandler(form) {
+  form.post(currentUrl)
+}
 
-  const columns: Array<Col> = [
-    {
-      name: 'id',
-      required: true,
-      label: 'ID',
-      align: 'left',
-      field: (row) => row.id,
-      format: (val) => `${val}`,
-      sortable: true,
-    },
-    {
-      name: 'name',
-      align: 'left',
-      label: 'Name',
-      field: 'name',
-      format: (val) => shorten(val, 3, ''),
-      sortable: true,
-    },
-    {
-      name: 'order_number',
-      align: 'left',
-      label: 'Order',
-      field: 'order_number',
-      sortable: true,
-    },
-    {
-      name: 'thumb',
-      align: 'left',
-      label: 'Image',
-      field: 'thumb',
-      sortable: false,
-    },
-    {
-      name: 'tags',
-      align: 'left',
-      label: 'Tags',
-      field: 'tags',
-      sortable: false,
-    },
+function editSendHandler(form) {
+  form.post(`${currentUrl}/${form.id}`)
+}
 
-    {
-      name: 'actions',
-      sortable: false,
-      label: 'Actions',
-      field: '',
-      align: 'center',
-    },
-  ]
-
-  const pagination = ref({
-    sortBy: 'id',
-    descending: false,
-    page: props.currentPage!,
-    rowsPerPage: props.perPage,
-    rowsNumber: props.total,
+function deleteRow(params) {
+  let { row } = params
+  Inertia.delete(`${currentUrl}/${row.id}`, {
+    preserveState: false,
   })
+}
 
-  const paginateForm = useForm({
-    page: props.currentPage,
-    perPage: props.perPage,
-    sortBy: props.sortBy,
-    descending: 0,
-    filter: {},
+function onPagination(page: string) {
+  let curPage = parseInt(page)
+  pagination.value.page = curPage
+  paginateForm.page = curPage
+  doQuery()
+}
+
+function onSort(params) {
+  const { sortBy } = params.pagination
+
+  pagination.value.descending = !pagination.value.descending
+
+  if (sortBy) {
+    pagination.value.sortBy = sortBy
+    paginateForm.sortBy = sortBy
+  }
+
+  paginateForm.descending = pagination.value.descending ? 1 : 0
+  doQuery()
+}
+
+const doQuery = () => {
+  loading.value = true
+  paginateForm.get(location.pathname, {
+    preserveState: true,
+    onSuccess: () => {
+      loading.value = false
+    },
   })
-
-  const loading = ref(false)
-  const createDialRef = ref()
-  const editDialRef = ref()
-
-  console.log(props)
-  function createDialog() {
-    createDialRef.value.reset()
-    createDialRef.value.show()
-  }
-
-  function editRow(params) {
-    let { row } = params
-    editDialRef.value.set(row)
-    editDialRef.value.show()
-  }
-
-  function deleteConfirm(params) {
-    $q.dialog({
-      title: 'Delete confirmation',
-      message: 'Are you sure you want to delete this item?',
-      cancel: true,
-    }).onOk(() => {
-      deleteRow(params)
-    })
-  }
-
-  function createSendHandler(form) {
-    form.post(currentUrl)
-  }
-
-  function editSendHandler(form) {
-    form.post(`${currentUrl}/${form.id}`)
-  }
-
-  function deleteRow(params) {
-    let { row } = params
-    Inertia.delete(`${currentUrl}/${row.id}`, {
-      preserveState: false,
-    })
-  }
-
-  function onPagination(page: string) {
-    let curPage = parseInt(page)
-    pagination.value.page = curPage
-    paginateForm.page = curPage
-    doQuery()
-  }
-
-  function onSort(params) {
-    const { sortBy } = params.pagination
-
-    pagination.value.descending = !pagination.value.descending
-
-    if (sortBy) {
-      pagination.value.sortBy = sortBy
-      paginateForm.sortBy = sortBy
-    }
-
-    paginateForm.descending = pagination.value.descending ? 1 : 0
-    doQuery()
-  }
-
-  const doQuery = () => {
-    loading.value = true
-    paginateForm.get(location.pathname, {
-      preserveState: true,
-      onSuccess: () => {
-        loading.value = false
-      },
-    })
-  }
+}
 </script>
 <style scoped>
-  .image {
-    height: 100%;
-    width: 100%;
-  }
+.image {
+  height: 100%;
+  width: 100%;
+}
 
-  .img-wrapp {
-    position: relative;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    width: 100px;
-    height: 100px;
-  }
+.img-wrapp {
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 100px;
+  height: 100px;
+}
 </style>

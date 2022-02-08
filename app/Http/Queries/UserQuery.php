@@ -2,7 +2,6 @@
 
 namespace App\Http\Queries;
 
-use App\Exports\UserExport;
 use App\Http\Resources\Admin\UserResource;
 use App\Models\User;
 use App\Support\GlobalSearchFilter;
@@ -12,8 +11,13 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class UserQuery extends BaseQuery
 {
-    public function make(): self
+    protected int $perPage = 5;
+
+    public function __construct()
     {
+        $direction = request()->get('descending', 0) ? 'ASC' : 'DESC';
+        $sort = request()->get('sortBy', 'id');
+
         $this->query = QueryBuilder::for(User::class)
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'email'])),
@@ -23,13 +27,9 @@ class UserQuery extends BaseQuery
                 AllowedFilter::exact('role'),
                 AllowedFilter::exact('active'),
             ])
-            ->allowedSorts(['id', 'name', 'last_login_at', 'created_at', 'updated_at'])
+            ->orderBy($sort, $direction)
         ;
-
-        $this->export = new UserExport($this->query);
         $this->resource = 'users';
-
-        return $this;
     }
 
     public function collection(): AnonymousResourceCollection
@@ -40,9 +40,12 @@ class UserQuery extends BaseQuery
     public function get(): array
     {
         return [
-            'sort' => request()->get('sort', 'id'),
+            'sortBy' => request()->get('sort', 'id'),
             'filter' => request()->get('filter'),
-            'users' => fn () => $this->collection(),
+            'items' => $this->collection()->items(),
+            'perPage' => (int) $this->collection()->perPage(),
+            'currentPage' => (int) $this->collection()->currentPage(),
+            'total' => (int) $this->collection()->total(),
         ];
     }
 }

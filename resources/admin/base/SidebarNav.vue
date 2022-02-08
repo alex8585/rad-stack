@@ -19,23 +19,23 @@
 </template>
 
 <script lang="ts" setup>
-  import { mainNav, isTitle, isLink } from '@admin/_nav'
+import { mainNav, isTitle, isLink } from '@admin/_nav'
 </script>
 
 <style lang="postcss" scoped>
-  a {
-    @apply text-primary-300 group-hover:text-white;
+a {
+  @apply text-primary-300 group-hover:text-white;
+
+  svg {
+    @apply fill-current text-primary-400 group-hover:text-white;
+  }
+
+  &.active {
+    @apply text-white;
 
     svg {
-      @apply fill-current text-primary-400 group-hover:text-white;
-    }
-
-    &.active {
-      @apply text-white;
-
-      svg {
-        @apply fill-current text-white;
-      }
+      @apply fill-current text-white;
     }
   }
+}
 </style>

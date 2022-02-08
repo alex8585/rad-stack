@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { pageWithItemProps, pageWithItemSetup } from '@admin/mixins/pages'
+import { pageWithItemProps, pageWithItemSetup } from '@admin/mixins/pages'
 
-  const props = defineProps(pageWithItemProps)
+const props = defineProps(pageWithItemProps)
 
-  const { getTitle } = pageWithItemSetup(props, 'show', 0)
+const { getTitle } = pageWithItemSetup(props, 'show', 0)
 </script>

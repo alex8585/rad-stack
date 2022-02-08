@@ -42,59 +42,59 @@
   </q-dialog>
 </template>
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue'
-  import { useForm } from '@inertiajs/inertia-vue3'
-  import { TagRowFormType } from '@admin/types/data-table'
+import { ref, onMounted } from 'vue'
+import { useForm } from '@inertiajs/inertia-vue3'
+import { TagRowFormType } from '@admin/types/data-table'
 
-  const props = defineProps({
-    initValues: {
-      default: () => [],
-      type: Array,
-    },
-    show: {
-      default: false,
-      type: Boolean,
-    },
-  })
+const props = defineProps({
+  initValues: {
+    default: () => [],
+    type: Array,
+  },
+  show: {
+    default: false,
+    type: Boolean,
+  },
+})
 
-  const emit = defineEmits(['change', 'mount', 'send'])
+const emit = defineEmits(['change', 'mount', 'send'])
 
-  const isShow = ref(false)
+const isShow = ref(false)
 
-  const ititForm: TagRowFormType = {
-    name: null,
-    order_number: '',
-    id: null,
+const ititForm: TagRowFormType = {
+  name: null,
+  order_number: '',
+  id: null,
+}
+
+const form = useForm(ititForm)
+
+function onSend() {
+  emit('send', form)
+}
+
+onMounted(() => {
+  isShow.value = props.show
+  emit('mount')
+})
+
+function set(row) {
+  for (const key in row) {
+    form[key] = row[key]
   }
+}
 
-  const form = useForm(ititForm)
+function reset() {
+  set(ititForm)
+  emit('change', form)
+}
 
-  function onSend() {
-    emit('send', form)
-  }
+function show() {
+  isShow.value = true
+}
 
-  onMounted(() => {
-    isShow.value = props.show
-    emit('mount')
-  })
-
-  function set(row) {
-    for (const key in row) {
-      form[key] = row[key]
-    }
-  }
-
-  function reset() {
-    set(ititForm)
-    emit('change', form)
-  }
-
-  function show() {
-    isShow.value = true
-  }
-
-  defineExpose({
-    reset,
-    show,
-  })
+defineExpose({
+  reset,
+  show,
+})
 </script>

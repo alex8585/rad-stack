@@ -32,13 +32,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { User } from '@admin/types'
-  import { PropType } from 'vue'
+import { User } from '@admin/types'
+import { PropType } from 'vue'
 
-  defineProps({
-    user: {
-      type: Object as PropType<User>,
-      required: true,
-    },
-  })
+defineProps({
+  user: {
+    type: Object as PropType<User>,
+    required: true,
+  },
+})
 </script>
