@@ -16,7 +16,6 @@ use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Patch;
 use Spatie\RouteAttributes\Attributes\Post;
 use Spatie\RouteAttributes\Attributes\Prefix;
-use Spatie\RouteAttributes\Attributes\Put;
 
 #[Prefix('users')]
 class UserController extends Controller
@@ -40,9 +39,10 @@ class UserController extends Controller
         return back()->with('success', 'The User has been stored');
     }
 
-    #[Put('{user}', name: 'users.update', middleware: 'can:modify-user,user')]
+    #[Post('{user}', name: 'users.update')]
     public function update(User $user, UserUpdateRequest $request)
     {
+        /* dd($request->all()); */
         $user->update($request->all());
 
         return back()->with('success', 'The User has been updated');
@@ -60,7 +60,7 @@ class UserController extends Controller
         return redirect()->route('admin.users')->with('flash.success', __('User updated.'));
     }
 
-    #[Delete('{user}', name: 'users.destroy', middleware: 'can:modify-user,user')]
+    #[Delete('{user}', name: 'users.destroy') ]
     public function destroy(User $user)
     {
         $user->delete();

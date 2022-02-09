@@ -33,7 +33,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'max:50'],
             'email' => ['required', 'max:50', 'email', Rule::unique('users')->ignore($user->id)],
-            'active' => ['boolean'],
+            'active' => ['required', 'boolean'],
             'role' => ['required', new EnumRule(RoleEnum::class)],
         ];
     }

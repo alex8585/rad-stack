@@ -17,8 +17,8 @@
       >
         <template #body-cell-active="params">
           <q-td :props="params">
-            <div v-if="params.row.active">active</div>
-            <div v-else>disabled</div>
+            <div v-if="params.row.active">Enabled</div>
+            <div v-else>Disabled</div>
           </q-td>
         </template>
 
@@ -67,7 +67,11 @@
       :roles="enums.roles"
       @send="createSendHandler"
     />
-    <EditDialog ref="editDialRef" @send="editSendHandler" />
+    <EditDialog
+      ref="editDialRef"
+      :roles="enums.roles"
+      @send="editSendHandler"
+    />
   </app-layout>
 </template>
 <script lang="ts" setup>
@@ -173,6 +177,7 @@ function createDialog() {
 
 function editRow(params) {
   let { row } = params
+  editDialRef.value.clearErrors()
   editDialRef.value.set(row)
   editDialRef.value.show()
 }
@@ -188,13 +193,43 @@ function deleteConfirm(params) {
 }
 
 function createSendHandler(form) {
-  form.role = form.role.value
-  form.active = form.active.value
-  form.post(`/admin/users/`)
+  Inertia.post(
+    `/admin/users/`,
+    {
+      ...form,
+      role: form.role?.value,
+      active: form.active?.value,
+    },
+    {
+      onSuccess: () => {
+        createDialRef.value.hide()
+        createDialRef.value.reset()
+      },
+      onError: (errors) => {
+        form.errors = errors
+      },
+    }
+  )
 }
 
 function editSendHandler(form) {
-  form.post(`/admin/users/${form.id}`)
+  Inertia.post(
+    `/admin/users/${form.id}`,
+    {
+      ...form,
+      role: form.role?.value,
+      active: form.active?.value,
+    },
+    {
+      onSuccess: () => {
+        editDialRef.value.hide()
+        editDialRef.value.reset()
+      },
+      onError: (errors) => {
+        form.errors = errors
+      },
+    }
+  )
 }
 
 function deleteRow(params) {

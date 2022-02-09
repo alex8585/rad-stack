@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="isShow">
+  <q-dialog ref="dialogRef" v-model="isShow">
     <q-card style="width: 600px; max-width: 60vw">
       <q-card-section>
         <q-btn
@@ -20,25 +20,43 @@
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Name </q-item-label>
-                <q-input v-model="form.name" filled />
+                <q-input
+                  v-model="form.name"
+                  :error-message="form.errors.name"
+                  :error="!!form.errors.name"
+                  filled
+                />
               </q-item-section>
             </q-item>
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Email </q-item-label>
-                <q-input v-model="form.email" filled />
+                <q-input
+                  v-model="form.email"
+                  :error-message="form.errors.email"
+                  :error="!!form.errors.email"
+                  filled
+                />
               </q-item-section>
             </q-item>
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Password </q-item-label>
-                <q-input v-model="form.password" type="password" filled />
+                <q-input
+                  v-model="form.password"
+                  :error-message="form.errors.password"
+                  :error="!!form.errors.password"
+                  type="password"
+                  filled
+                />
               </q-item-section>
             </q-item>
             <q-item>
               <q-item-section>
                 <q-select
                   v-model="form.active"
+                  :error-message="form.errors.active"
+                  :error="!!form.errors.active"
                   :options="statuses"
                   label="Status"
                 />
@@ -48,6 +66,8 @@
               <q-item-section>
                 <q-select
                   v-model="form.role"
+                  :error-message="form.errors.role"
+                  :error="!!form.errors.role"
                   :options="rolesArr"
                   label="Role"
                 />
@@ -59,7 +79,7 @@
       <q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
-          <q-btn v-close-popup label="Save" color="primary" @click="onSend" />
+          <q-btn label="Save" color="primary" @click="onSend" />
         </q-card-actions>
       </q-card-section>
     </q-card>
@@ -91,22 +111,22 @@ const statuses = [
   { label: 'Disable', value: 0 },
   { label: 'Enable', value: 1 },
 ]
-/* console.log(props.roles) */
 const emit = defineEmits(['change', 'mount', 'send'])
 
 const isShow = ref(false)
 
 const initForm: UserRowFormType = {
   name: null,
-  password: '',
+  password: null,
   id: null,
-  active: '',
-  role: '',
-  email: '',
+  active: null,
+  role: null,
+  email: null,
 }
 
 let rolesArr = ref([])
 const form = useForm(initForm)
+const dialogRef = ref()
 
 function onSend() {
   emit('send', form)
@@ -123,13 +143,28 @@ onMounted(() => {
   emit('mount')
 })
 
+function hide() {
+  dialogRef.value.hide()
+}
+
 function set(row) {
   for (const key in row) {
+    if (['role', 'active'].includes(key)) {
+      continue
+    }
     form[key] = row[key]
   }
+
+  const status = statuses.find((e) => e.value == row.active)
+
+  const role = rolesArr.value.find((e) => e.value == row.role)
+
+  form.active = status
+  form.role = role
 }
 
 function reset() {
+  form.clearErrors()
   set(initForm)
   emit('change', form)
 }
@@ -140,6 +175,8 @@ function show() {
 
 defineExpose({
   reset,
+  hide,
+  set,
   show,
 })
 </script>
