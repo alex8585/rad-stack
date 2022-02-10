@@ -118,7 +118,6 @@ const isShow = ref(false)
 const initForm: UserRowFormType = {
   name: null,
   password: null,
-  id: null,
   active: null,
   role: null,
   email: null,
@@ -143,16 +142,11 @@ onMounted(() => {
   emit('mount')
 })
 
-function hide() {
-  dialogRef.value.hide()
-}
-
 function set(row) {
   for (const key in row) {
-    if (['role', 'active'].includes(key)) {
-      continue
+    if (['name', 'email', 'password'].includes(key)) {
+      form[key] = row[key]
     }
-    form[key] = row[key]
   }
 
   const status = statuses.find((e) => e.value == row.active)
@@ -161,6 +155,10 @@ function set(row) {
 
   form.active = status
   form.role = role
+}
+
+function hide() {
+  dialogRef.value.hide()
 }
 
 function reset() {

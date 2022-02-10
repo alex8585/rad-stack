@@ -71,6 +71,7 @@ import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
 const $q = useQuasar()
 
+const currentUrl = route(route().current())
 let props = defineProps({
   action: String,
   items: Array,
@@ -132,8 +133,6 @@ const paginateForm = useForm({
   filter: {},
 })
 
-/* const showEditDialog = ref(false) */
-/* const showCreateDialog = ref(false) */
 const loading = ref(false)
 const createDialRef = ref()
 const editDialRef = ref()
@@ -149,6 +148,7 @@ function createDialog() {
 
 function editRow(params) {
   let { row } = params
+  editDialRef.value.clearErrors()
   editDialRef.value.set(row)
   editDialRef.value.show()
 }
@@ -162,18 +162,25 @@ function deleteConfirm(params) {
     deleteRow(params)
   })
 }
-
 function createSendHandler(form) {
-  form.post(`/admin/tags/`)
+  form.post(currentUrl, {
+    onSuccess: () => {
+      createDialRef.value.hide()
+    },
+  })
 }
 
 function editSendHandler(form) {
-  form.post(`/admin/tags/${form.id}`)
+  form.post(`${currentUrl}/${form.id}`, {
+    onSuccess: () => {
+      editDialRef.value.hide()
+    },
+  })
 }
 
 function deleteRow(params) {
   let { row } = params
-  Inertia.delete(`/admin/tags/${row.id}`, {
+  Inertia.delete(`${currentUrl}/${row.id}`, {
     preserveState: false,
   })
 }

@@ -81,6 +81,7 @@ import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
 const $q = useQuasar()
 
+const currentUrl = route(route().current())
 let props = defineProps({
   action: String,
   items: Array,
@@ -92,7 +93,6 @@ let props = defineProps({
   tags: Array,
 })
 
-const currentUrl = route(route().current())
 let pagesCount = getPageCount(props.total, props.perPage)
 
 const columns: Array<Col> = [
@@ -164,7 +164,6 @@ const loading = ref(false)
 const createDialRef = ref()
 const editDialRef = ref()
 
-console.log(props)
 function createDialog() {
   createDialRef.value.reset()
   createDialRef.value.show()
@@ -172,8 +171,25 @@ function createDialog() {
 
 function editRow(params) {
   let { row } = params
+  editDialRef.value.clearErrors()
   editDialRef.value.set(row)
   editDialRef.value.show()
+}
+
+function createSendHandler(form) {
+  form.post(currentUrl, {
+    onSuccess: () => {
+      createDialRef.value.hide()
+    },
+  })
+}
+
+function editSendHandler(form) {
+  form.post(`${currentUrl}/${form.id}`, {
+    onSuccess: () => {
+      editDialRef.value.hide()
+    },
+  })
 }
 
 function deleteConfirm(params) {
@@ -184,14 +200,6 @@ function deleteConfirm(params) {
   }).onOk(() => {
     deleteRow(params)
   })
-}
-
-function createSendHandler(form) {
-  form.post(currentUrl)
-}
-
-function editSendHandler(form) {
-  form.post(`${currentUrl}/${form.id}`)
 }
 
 function deleteRow(params) {

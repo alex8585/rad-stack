@@ -24,9 +24,9 @@ class PortfolioUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            /* 'name' => ['required', 'max:50'], */
-            /* 'order_number' => ['required'], */
-            /* 'url' => ['required', 'max:250'], */
+            'name' => ['required', 'max:50'],
+            'url' => ['required', 'max:350'],
+            'order_number' => ['required'],
         ];
     }
 }

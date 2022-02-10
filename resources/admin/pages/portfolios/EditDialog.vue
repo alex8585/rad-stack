@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="isShow">
+  <q-dialog ref="dialogRef" v-model="isShow">
     <q-card style="width: 600px; max-width: 60vw">
       <q-card-section>
         <q-btn
@@ -11,7 +11,7 @@
           class="float-right"
           color="grey-8"
         />
-        <div class="text-h6">Update Portfolios</div>
+        <div class="text-h6">Create Portfolio</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section class="q-pt-none">
@@ -20,24 +20,39 @@
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Name </q-item-label>
-                <q-input v-model="form.name" filled />
+                <q-input
+                  v-model="form.name"
+                  :error-message="form.errors.name"
+                  :error="!!form.errors.name"
+                  filled
+                />
               </q-item-section>
             </q-item>
 
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Url </q-item-label>
-                <q-input v-model="form.url" filled />
+                <q-input
+                  v-model="form.url"
+                  :error-message="form.errors.url"
+                  :error="!!form.errors.url"
+                  filled
+                />
               </q-item-section>
             </q-item>
 
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Order number </q-item-label>
-                <q-input v-model="form.order_number" type="number" filled />
+                <q-input
+                  v-model="form.order_number"
+                  :error-message="form.errors.order_number"
+                  :error="!!form.errors.order_number"
+                  filled
+                  type="number"
+                />
               </q-item-section>
             </q-item>
-
             <q-item>
               <q-item-section>
                 <UploadInput
@@ -61,7 +76,7 @@
       <q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
-          <q-btn v-close-popup label="Save" color="primary" @click="onSend" />
+          <q-btn label="Save" color="primary" @click="onSend" />
         </q-card-actions>
       </q-card-section>
     </q-card>
@@ -101,7 +116,8 @@ const emit = defineEmits(['change', 'mount', 'send'])
 
 const isShow = ref(false)
 
-const ititForm: PortfolioRowFormType = {
+const dialogRef = ref()
+const initForm: PortfolioRowFormType = {
   name: null,
   url: null,
   order_number: '',
@@ -110,15 +126,24 @@ const ititForm: PortfolioRowFormType = {
   tags: [],
 }
 
-const form = useForm(ititForm)
+const form = useForm(initForm)
 
 function onSend() {
   emit('send', form)
 }
-
+function hide() {
+  dialogRef.value.hide()
+}
+function clearErrors() {
+  form.clearErrors()
+}
+function reset() {
+  form.clearErrors()
+  form.reset()
+  emit('change', form)
+}
 onMounted(() => {
   isShow.value = props.show
-  console.log(form.tags)
 
   for (const tag of props.tags as Array<TagType>) {
     let option = {
@@ -157,16 +182,13 @@ async function set(row) {
   }
 }
 
-function reset() {
-  form.reset()
-  emit('change', form)
-}
-
 function show() {
   isShow.value = true
 }
 
 defineExpose({
+  hide,
+  clearErrors,
   reset,
   show,
   set,

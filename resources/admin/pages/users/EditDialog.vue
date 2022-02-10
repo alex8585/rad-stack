@@ -103,16 +103,16 @@ const emit = defineEmits(['change', 'mount', 'send'])
 
 const isShow = ref(false)
 
-const ititForm: UserRowFormType = {
+const initForm: UserRowFormType = {
   name: null,
+  email: null,
   id: null,
-  active: '',
-  role: '',
-  email: '',
+  active: null,
+  role: null,
 }
 
 let rolesArr = ref([])
-const form = useForm(ititForm)
+const form = useForm(initForm)
 
 const dialogRef = ref()
 function onSend() {
@@ -140,10 +140,9 @@ function clearErrors() {
 
 function set(row) {
   for (const key in row) {
-    if (['role', 'active'].includes(key)) {
-      continue
+    if (['name', 'email', 'id'].includes(key)) {
+      form[key] = row[key]
     }
-    form[key] = row[key]
   }
 
   const status = statuses.find((e) => e.value == row.active)

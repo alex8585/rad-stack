@@ -11,7 +11,7 @@
           class="float-right"
           color="grey-8"
         />
-        <div class="text-h6">Create Portfolio</div>
+        <div class="text-h6">Create Art</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section class="q-pt-none">
@@ -19,57 +19,38 @@
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs"> Name </q-item-label>
+                <q-item-label class="q-pb-xs"> Title </q-item-label>
                 <q-input
-                  v-model="form.name"
-                  :error-message="form.errors.name"
-                  :error="!!form.errors.name"
+                  v-model="form.title"
+                  :error-message="form.errors.title"
+                  :error="!!form.errors.title"
                   filled
                 />
               </q-item-section>
             </q-item>
-
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs"> Url </q-item-label>
-                <q-input
-                  v-model="form.url"
-                  :error-message="form.errors.url"
-                  :error="!!form.errors.url"
-                  filled
+                <div>Description</div>
+                <q-editor
+                  v-model="form.description"
+                  :error-message="form.errors.description"
+                  :error="!!form.errors.description"
+                  min-height="5rem"
                 />
-              </q-item-section>
-            </q-item>
-
-            <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs"> Order number </q-item-label>
-                <q-input
-                  v-model="form.order_number"
-                  :error-message="form.errors.order_number"
-                  :error="!!form.errors.order_number"
-                  filled
-                  type="number"
-                />
+                <div v-if="form.errors.description" style="color: red">
+                  {{ form.errors.description }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item>
               <q-item-section>
                 <UploadInput
-                  :init-files="form.files"
+                  ref="createArtUploadInputRef"
+                  :multiple="true"
                   @change="uploadInputChangeHandler"
                 />
               </q-item-section>
             </q-item>
-
-            <q-select
-              v-model="form.tags"
-              filled
-              multiple
-              :options="options"
-              label="Tags"
-              style="width: 250px"
-            />
           </q-list>
         </q-form>
       </q-card-section>
@@ -85,18 +66,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
-
-import {
-  OptionType,
-  TagType,
-  PortfolioRowFormType,
-} from '@admin/types/data-table'
+import { ArtRowFormType } from '@admin/types/data-table'
 
 const props = defineProps({
-  tags: {
-    default: () => [],
-    type: Array,
-  },
   initValues: {
     default: () => [],
     type: Array,
@@ -107,26 +79,22 @@ const props = defineProps({
   },
 })
 
-let options: Array<OptionType> = []
+const emit = defineEmits(['change', 'mount', 'send'])
+
+const isShow = ref(false)
+
+const initForm: ArtRowFormType = {
+  title: null,
+  description: '',
+  files: [],
+}
+
+const dialogRef = ref()
+const form = useForm(initForm)
 
 function uploadInputChangeHandler(files) {
   form.files = files
 }
-
-const emit = defineEmits(['change', 'mount', 'send'])
-
-const dialogRef = ref()
-const isShow = ref(false)
-const initForm: PortfolioRowFormType = {
-  name: null,
-  url: null,
-  order_number: '',
-  id: null,
-  files: [],
-  tags: [],
-}
-
-const form = useForm(initForm)
 
 function onSend() {
   emit('send', form)
@@ -134,23 +102,19 @@ function onSend() {
 
 onMounted(() => {
   isShow.value = props.show
-  for (const tag of props.tags as Array<TagType>) {
-    let option = {
-      label: tag.name,
-      value: tag.id,
-    }
-    options.push(option)
-  }
   emit('mount')
 })
+
 function hide() {
   dialogRef.value.hide()
 }
+
 function set(row) {
   for (const key in row) {
     form[key] = row[key]
   }
 }
+
 function reset() {
   form.clearErrors()
   set(initForm)
@@ -158,14 +122,12 @@ function reset() {
 }
 
 function show() {
-  reset()
-  form.files = []
   isShow.value = true
 }
 
 defineExpose({
-  hide,
   reset,
+  hide,
   show,
 })
 </script>

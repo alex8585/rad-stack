@@ -27,6 +27,7 @@ class TagController extends Controller
     #[Post('/', name: 'tags.store')]
     public function store(TagStoreRequest $request)
     {
+        /* dd($request->all()); */
         Tag::create($request->all());
 
         return back()->with('success', 'The tag has been stored');

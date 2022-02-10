@@ -11,7 +11,7 @@
           class="float-right"
           color="grey-8"
         />
-        <div class="text-h6">Create Portfolio</div>
+        <div class="text-h6">Update Art</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section class="q-pt-none">
@@ -19,11 +19,11 @@
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs"> Name </q-item-label>
+                <q-item-label class="q-pb-xs"> Title </q-item-label>
                 <q-input
-                  v-model="form.name"
-                  :error-message="form.errors.name"
-                  :error="!!form.errors.name"
+                  v-model="form.title"
+                  :error-message="form.errors.title"
+                  :error="!!form.errors.title"
                   filled
                 />
               </q-item-section>
@@ -31,45 +31,23 @@
 
             <q-item>
               <q-item-section>
-                <q-item-label class="q-pb-xs"> Url </q-item-label>
-                <q-input
-                  v-model="form.url"
-                  :error-message="form.errors.url"
-                  :error="!!form.errors.url"
-                  filled
-                />
+                <div>Description</div>
+                <q-editor v-model="form.description" min-height="5rem" />
+                <div v-if="form.errors.description" style="color: red">
+                  {{ form.errors.description }}
+                </div>
               </q-item-section>
             </q-item>
 
-            <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs"> Order number </q-item-label>
-                <q-input
-                  v-model="form.order_number"
-                  :error-message="form.errors.order_number"
-                  :error="!!form.errors.order_number"
-                  filled
-                  type="number"
-                />
-              </q-item-section>
-            </q-item>
             <q-item>
               <q-item-section>
                 <UploadInput
+                  :multiple="true"
                   :init-files="form.files"
                   @change="uploadInputChangeHandler"
                 />
               </q-item-section>
             </q-item>
-
-            <q-select
-              v-model="form.tags"
-              filled
-              multiple
-              :options="options"
-              label="Tags"
-              style="width: 250px"
-            />
           </q-list>
         </q-form>
       </q-card-section>
@@ -85,18 +63,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
-
-import {
-  OptionType,
-  TagType,
-  PortfolioRowFormType,
-} from '@admin/types/data-table'
+import { ArtRowFormType } from '@admin/types/data-table'
 
 const props = defineProps({
-  tags: {
-    default: () => [],
-    type: Array,
-  },
   initValues: {
     default: () => [],
     type: Array,
@@ -107,25 +76,20 @@ const props = defineProps({
   },
 })
 
-let options: Array<OptionType> = []
+const emit = defineEmits(['change', 'mount', 'send'])
+
+const isShow = ref(false)
+const initForm: ArtRowFormType = {
+  files: [],
+  title: null,
+  description: '',
+  id: null,
+}
 
 function uploadInputChangeHandler(files) {
   form.files = files
 }
-
-const emit = defineEmits(['change', 'mount', 'send'])
-
 const dialogRef = ref()
-const isShow = ref(false)
-const initForm: PortfolioRowFormType = {
-  name: null,
-  url: null,
-  order_number: '',
-  id: null,
-  files: [],
-  tags: [],
-}
-
 const form = useForm(initForm)
 
 function onSend() {
@@ -134,38 +98,54 @@ function onSend() {
 
 onMounted(() => {
   isShow.value = props.show
-  for (const tag of props.tags as Array<TagType>) {
-    let option = {
-      label: tag.name,
-      value: tag.id,
-    }
-    options.push(option)
-  }
   emit('mount')
 })
+
+async function set(row) {
+  for (const key in row) {
+    if (['title', 'description', 'id'].includes(key)) {
+      form[key] = row[key]
+    }
+  }
+  form.files = []
+
+  for (const image of row.media) {
+    let response = await fetch(image.original_url)
+    let data = await response.blob()
+    let file = new File([data], image.name, {})
+    form.files.push(file)
+  }
+
+  /* if (row.image) { */
+  /*   let response = await fetch(row.image) */
+  /*   var filename = row.image.replace(/^.*[\\/]/, '') */
+  /*   let data = await response.blob() */
+  /*   let file = new File([data], filename) */
+  /*   form.files.push(file) */
+  /* } */
+}
+
 function hide() {
   dialogRef.value.hide()
 }
-function set(row) {
-  for (const key in row) {
-    form[key] = row[key]
-  }
+function clearErrors() {
+  form.clearErrors()
 }
 function reset() {
   form.clearErrors()
-  set(initForm)
+  form.reset()
   emit('change', form)
 }
 
 function show() {
-  reset()
-  form.files = []
   isShow.value = true
 }
 
 defineExpose({
-  hide,
+  clearErrors,
   reset,
+  hide,
   show,
+  set,
 })
 </script>

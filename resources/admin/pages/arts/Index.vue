@@ -55,129 +55,23 @@
       </div>
     </div>
 
-    <q-dialog v-model="showCreateDialog">
-      <q-card style="width: 600px; max-width: 60vw">
-        <q-card-section>
-          <q-btn
-            v-close-popup
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-          />
-          <div class="text-h6">Create Art</div>
-        </q-card-section>
-        <q-separator inset />
-        <q-card-section class="q-pt-none">
-          <q-form class="q-gutter-md">
-            <q-list>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs"> Title </q-item-label>
-                  <q-input v-model="rowForm.title" filled />
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <div>Description</div>
-                  <q-editor v-model="rowForm.description" min-height="5rem" />
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <UploadInput
-                    ref="createArtUploadInputRef"
-                    :multiple="true"
-                    @change="uploadInputChangeHandler"
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-form>
-        </q-card-section>
-        <q-card-section>
-          <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary" />
-            <q-btn
-              v-close-popup
-              label="Save"
-              color="primary"
-              @click="createRow"
-            />
-          </q-card-actions>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="showEditDialog">
-      <q-card style="width: 600px; max-width: 60vw">
-        <q-card-section>
-          <q-btn
-            v-close-popup
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-          />
-          <div class="text-h6">Update Art</div>
-        </q-card-section>
-        <q-separator inset />
-        <q-card-section class="q-pt-none">
-          <q-form class="q-gutter-md">
-            <q-list>
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs"> Title </q-item-label>
-                  <q-input v-model="rowForm.title" filled />
-                </q-item-section>
-              </q-item>
-
-              <q-item>
-                <q-item-section>
-                  <div>Description</div>
-                  <q-editor v-model="rowForm.description" min-height="5rem" />
-                </q-item-section>
-              </q-item>
-
-              <q-item>
-                <q-item-section>
-                  <UploadInput
-                    :multiple="true"
-                    :init-files="rowForm.files"
-                    @change="uploadInputChangeHandler"
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-form>
-        </q-card-section>
-        <q-card-section>
-          <q-card-actions align="right">
-            <q-btn v-close-popup flat label="Cancel" color="primary" />
-            <q-btn
-              v-close-popup
-              label="Save"
-              color="primary"
-              @click="updateRow"
-            />
-          </q-card-actions>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <CreateDialog ref="createDialRef" @send="createSendHandler" />
+    <EditDialog ref="editDialRef" @send="editSendHandler" />
   </app-layout>
 </template>
 
 <script lang="ts" setup>
-import { Col, ArtRowFormType } from '@admin/types/data-table'
+import { Col } from '@admin/types/data-table'
 import { shorten } from '@admin/functions'
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 import { useQuasar } from 'quasar'
+
 import { Inertia } from '@inertiajs/inertia'
+import CreateDialog from './CreateDialog.vue'
+import EditDialog from './EditDialog.vue'
+
+const currentUrl = route(route().current())
 const $q = useQuasar()
 
 let props = defineProps({
@@ -249,63 +143,55 @@ const form = useForm({
   filter: {},
 })
 
-const initRowForm: ArtRowFormType = {
-  files: [],
-  title: null,
-  description: '',
-  id: null,
-}
-const rowForm = useForm(initRowForm)
+const createDialRef = ref()
+const editDialRef = ref()
 
-const showEditDialog = ref(false)
-const showCreateDialog = ref(false)
 const loading = ref(false)
-const createArtUploadInputRef = ref(null)
-
-/* watchEffect(() => { */
-/*       }) */
 
 let totalCount = props.total!
 let pageSize = props.perPage!
 let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
-function uploadInputChangeHandler(files) {
-  rowForm.files = files
-}
-
 function createDialog() {
-  rowForm.files = []
-  rowForm.reset()
-  showCreateDialog.value = true
+  createDialRef.value.reset()
+  createDialRef.value.show()
 }
 
-async function editRow(params) {
+function editRow(params) {
   let { row } = params
-  showEditDialog.value = true
-  rowForm.title = row.title
-  rowForm.description = row.description
-  rowForm.id = row.id
-  rowForm.files = []
-
-  for (const image of row.media) {
-    let response = await fetch(image.original_url)
-    let data = await response.blob()
-    let file = new File([data], image.name, {})
-    rowForm.files.push(file)
-  }
+  editDialRef.value.clearErrors()
+  editDialRef.value.set(row)
+  editDialRef.value.show()
 }
 
-function updateRow() {
-  rowForm.post(`/admin/arts/${rowForm.id}`, {
-    preserveState: true,
-    onSuccess: () => rowForm.reset(),
+/* async function editRow(params) { */
+/*   let { row } = params */
+/*   showEditDialog.value = true */
+/*   rowForm.title = row.title */
+/*   rowForm.description = row.description */
+/*   rowForm.id = row.id */
+/*   rowForm.files = [] */
+
+/*   for (const image of row.media) { */
+/*     let response = await fetch(image.original_url) */
+/*     let data = await response.blob() */
+/*     let file = new File([data], image.name, {}) */
+/*     rowForm.files.push(file) */
+/*   } */
+/* } */
+function createSendHandler(form) {
+  form.post(currentUrl, {
+    onSuccess: () => {
+      createDialRef.value.hide()
+    },
   })
 }
 
-function createRow() {
-  rowForm.id = null
-  rowForm.post(`/admin/arts/`, {
-    preserveState: false,
+function editSendHandler(form) {
+  form.post(`${currentUrl}/${form.id}`, {
+    onSuccess: () => {
+      editDialRef.value.hide()
+    },
   })
 }
 
@@ -321,7 +207,7 @@ function deleteConfirm(params) {
 
 function deleteRow(params) {
   let { row } = params
-  Inertia.delete(`/admin/arts/${row.id}`, {
+  Inertia.delete(`${currentUrl}/${row.id}`, {
     preserveState: false,
   })
 }

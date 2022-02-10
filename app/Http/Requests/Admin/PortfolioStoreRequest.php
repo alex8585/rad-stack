@@ -24,9 +24,9 @@ class PortfolioStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            /* 'name' => ['required', 'max:50'], */
-            /* 'url' => ['required', 'max:250'], */
-            /* 'order_number' => ['required'], */
+            'name' => ['required', 'max:50'],
+            'url' => ['required', 'max:350'],
+            'order_number' => ['required'],
         ];
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="isShow">
+  <q-dialog ref="dialogRef" v-model="isShow">
     <q-card style="width: 600px; max-width: 60vw">
       <q-card-section>
         <q-btn
@@ -20,14 +20,25 @@
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Name </q-item-label>
-                <q-input v-model="form.name" filled />
+                <q-input
+                  v-model="form.name"
+                  :error-message="form.errors.name"
+                  :error="!!form.errors.name"
+                  filled
+                />
               </q-item-section>
             </q-item>
 
             <q-item>
               <q-item-section>
                 <q-item-label class="q-pb-xs"> Order number </q-item-label>
-                <q-input v-model="form.order_number" type="number" filled />
+                <q-input
+                  v-model="form.order_number"
+                  :error-message="form.errors.order_number"
+                  :error="!!form.errors.order_number"
+                  type="number"
+                  filled
+                />
               </q-item-section>
             </q-item>
           </q-list>
@@ -36,7 +47,7 @@
       <q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
-          <q-btn v-close-popup label="Save" color="primary" @click="onSend" />
+          <q-btn label="Save" color="primary" @click="onSend" />
         </q-card-actions>
       </q-card-section>
     </q-card>
@@ -62,13 +73,14 @@ const emit = defineEmits(['change', 'mount', 'send'])
 
 const isShow = ref(false)
 
-const ititForm: TagRowFormType = {
+const initForm: TagRowFormType = {
   name: null,
   order_number: '',
   id: null,
 }
 
-const form = useForm(ititForm)
+const dialogRef = ref()
+const form = useForm(initForm)
 
 function onSend() {
   emit('send', form)
@@ -85,7 +97,14 @@ function set(row) {
   }
 }
 
+function hide() {
+  dialogRef.value.hide()
+}
+function clearErrors() {
+  form.clearErrors()
+}
 function reset() {
+  form.clearErrors()
   form.reset()
   emit('change', form)
 }
@@ -95,7 +114,9 @@ function show() {
 }
 
 defineExpose({
+  clearErrors,
   reset,
+  hide,
   show,
   set,
 })

@@ -86,6 +86,7 @@ import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
 const $q = useQuasar()
 
+const currentUrl = route(route().current())
 let props = defineProps({
   action: String,
   items: Array,
@@ -194,7 +195,7 @@ function deleteConfirm(params) {
 
 function createSendHandler(form) {
   Inertia.post(
-    `/admin/users/`,
+    currentUrl,
     {
       ...form,
       role: form.role?.value,
@@ -214,7 +215,7 @@ function createSendHandler(form) {
 
 function editSendHandler(form) {
   Inertia.post(
-    `/admin/users/${form.id}`,
+    `${currentUrl}/${form.id}`,
     {
       ...form,
       role: form.role?.value,
@@ -234,7 +235,7 @@ function editSendHandler(form) {
 
 function deleteRow(params) {
   let { row } = params
-  Inertia.delete(`/admin/users/${row.id}`, {
+  Inertia.delete(`${currenUrl}/${row.id}`, {
     preserveState: false,
   })
 }
