@@ -9,13 +9,13 @@ use Spatie\RouteAttributes\Attributes\Get;
 class AdminAuthController extends Controller
 {
     #[Get('login', name: 'login', middleware: 'guest')]
-    public function login()
-    {
-        return Inertia::render('auth/Login', [
-            'canRegister' => config('auth.registration'),
-            'status' => session('status'),
-        ]);
-    }
+     public function login()
+     {
+         return Inertia::render('auth/Login', [
+             'canRegister' => config('auth.registration'),
+             'status' => session('status'),
+         ]);
+     }
 
     #[Get('forgot-password', name: 'password.request', middleware: 'guest')]
     public function requestPasswordResetLink()

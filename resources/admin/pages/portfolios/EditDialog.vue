@@ -11,7 +11,7 @@
           class="float-right"
           color="grey-8"
         />
-        <div class="text-h6">Create Portfolio</div>
+        <div class="text-h6">Edit Portfolio</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section class="q-pt-none">

@@ -24,7 +24,7 @@
 
         <template #body-cell-role="params">
           <q-td :props="params">
-            <div>{{ enums.roles[params.row.role] }}</div>
+            <div>{{ enums?.roles[params.row.role] }}</div>
           </q-td>
         </template>
 
@@ -64,12 +64,12 @@
 
     <CreateDialog
       ref="createDialRef"
-      :roles="enums.roles"
+      :roles="enums?.roles"
       @send="createSendHandler"
     />
     <EditDialog
       ref="editDialRef"
-      :roles="enums.roles"
+      :roles="enums?.roles"
       @send="editSendHandler"
     />
   </app-layout>
@@ -235,7 +235,7 @@ function editSendHandler(form) {
 
 function deleteRow(params) {
   let { row } = params
-  Inertia.delete(`${currenUrl}/${row.id}`, {
+  Inertia.delete(`${currentUrl}/${row.id}`, {
     preserveState: false,
   })
 }

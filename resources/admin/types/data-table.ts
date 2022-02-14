@@ -30,15 +30,21 @@ export interface ArtRowFormType {
 }
 export interface TagRowFormType {
   name?: string | null
-  order_number: string
+  order_number?: string | null
   id?: number | null
 }
+
+export interface ActiveObjl {
+  label: string
+  value: number
+}
+
 export interface UserRowFormType {
   name?: string | null
-  email: string
+  email?: string | null
   id?: number | null
   password?: string | null
-  active?: string | null
+  active?: ActiveObjl | null
   role?: string | null
 }
 export interface OptionType {

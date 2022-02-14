@@ -123,7 +123,7 @@ const initForm: UserRowFormType = {
   email: null,
 }
 
-let rolesArr = ref([])
+let rolesArr = ref()
 const form = useForm(initForm)
 const dialogRef = ref()
 

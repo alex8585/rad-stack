@@ -21,23 +21,21 @@ import { App } from 'vue'
 
 export default {
   install: (app: App): void => {
-    app.component('TextField', TextField)
-    app.component('EmailField', EmailField)
-    app.component('BooleanField', BooleanField)
-    app.component('SwitchField', SwitchField)
-    app.component('SelectField', SelectField)
-    app.component('DateField', DateField)
-    app.component('ReferenceField', ReferenceField)
-    app.component('ImageField', ImageField)
-    app.component('FileField', FileField)
-    app.component('UploadInput', UploadInput)
-
-    app.component('TextFilter', TextFilter)
-    app.component('SelectFilter', SelectFilter)
-    app.component('BooleanFilter', BooleanFilter)
-    app.component('ReferenceFilter', ReferenceFilter)
-    app.component('DateFilter', DateFilter)
-
-    app.component('AdminDraggable', draggable)
+    // app.component('TextField', TextField)
+    // app.component('EmailField', EmailField)
+    // app.component('BooleanField', BooleanField)
+    // app.component('SwitchField', SwitchField)
+    // app.component('SelectField', SelectField)
+    // app.component('DateField', DateField)
+    // app.component('ReferenceField', ReferenceField)
+    // app.component('ImageField', ImageField)
+    // app.component('FileField', FileField)
+    // app.component('UploadInput', UploadInput)
+    // app.component('TextFilter', TextFilter)
+    // app.component('SelectFilter', SelectFilter)
+    // app.component('BooleanFilter', BooleanFilter)
+    // app.component('ReferenceFilter', ReferenceFilter)
+    // app.component('DateFilter', DateFilter)
+    // app.component('AdminDraggable', draggable)
   },
 }
