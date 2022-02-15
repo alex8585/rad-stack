@@ -8,40 +8,42 @@
       }}
     </div>
 
-    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-      {{ status }}
-    </div>
-
-    <validation-errors class="mb-4" />
-
-    <base-form
-      v-slot="{ processing }"
-      method="post"
-      :url="route('password.email')"
-    >
-      <div>
-        <text-input source="email" type="email" required autofocus />
-      </div>
-
-      <div class="mt-4">
-        <base-button
-          type="submit"
-          class="w-full text-center"
-          :loading="processing"
-        >
-          {{ $t('Email Password Reset Link') }}
-        </base-button>
-      </div>
-    </base-form>
+    <q-form class="q-gutter-md">
+      <q-list>
+        <q-item>
+          <q-item-section>
+            <q-item-label class="q-pb-xs"> Email </q-item-label>
+            <q-input
+              v-model="form.email"
+              :error-message="form.errors.email"
+              :error="!!form.errors.email"
+              filled
+            />
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <q-card-section>
+        <q-card-actions>
+          <q-btn label="Reset Password" color="primary" @click="onSend" />
+        </q-card-actions>
+      </q-card-section>
+    </q-form>
   </auth-layout>
 </template>
 
 <script lang="ts" setup>
-import { useTitle } from '@admin/features/helpers'
-
+import { useForm } from '@inertiajs/inertia-vue3'
 defineProps({
   status: String,
 })
 
-useTitle('Email Password Reset Link')
+const initForm = {
+  email: null,
+}
+
+const form = useForm(initForm)
+
+function onSend() {
+  form.post(route('password.email'), {})
+}
 </script>

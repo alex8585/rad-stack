@@ -25,7 +25,6 @@
             />
           </q-item-section>
         </q-item>
-        <!-- source="password_confirmation" -->
         <q-item>
           <q-item-section>
             <q-item-label class="q-pb-xs">Password</q-item-label>

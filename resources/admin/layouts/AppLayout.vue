@@ -21,9 +21,9 @@
                   {{ $t('Manage Account') }}
                 </div>
 
-                <dropdown-link :href="route('admin.profile.show')" icon="user">
-                  {{ $t('Profile') }}
-                </dropdown-link>
+                <!-- <dropdown-link :href="route('admin.profile.show')" icon="user"> -->
+                <!--   {{ $t('Profile') }} -->
+                <!-- </dropdown-link> -->
 
                 <div class="border-t border-gray-100" />
 
@@ -42,15 +42,15 @@
                   {{ $t('Log Out') }}
                 </dropdown-link>
               </template>
-              <dropdown-link :href="route('admin.profile.show')" icon="user">
-                <q-item>
-                  <q-item-section>
-                    <q-item-label>
-                      {{ $t('Profile') }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </dropdown-link>
+              <!-- <dropdown-link :href="route('admin.profile.show')" icon="user"> -->
+              <!-- <q-item> -->
+              <!--   <q-item-section> -->
+              <!--     <q-item-label> -->
+              <!--       {{ $t('Profile') }} -->
+              <!--     </q-item-label> -->
+              <!--   </q-item-section> -->
+              <!-- </q-item> -->
+              <!-- </dropdown-link> -->
               <dropdown-link icon="logout" @click="logout">
                 <q-item>
                   <q-item-section>

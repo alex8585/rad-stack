@@ -42,12 +42,6 @@ class AdminAuthController extends Controller
         return Inertia::render('auth/Register');
     }
 
-    #[Get('user/confirm-password', name: 'password.confirm', middleware: 'auth:sanctum')]
-    public function confirmPassword()
-    {
-        return Inertia::render('auth/ConfirmPassword');
-    }
-
     #[Get('user/profile', name: 'profile.show', middleware: 'auth:sanctum')]
     public function show()
     {
