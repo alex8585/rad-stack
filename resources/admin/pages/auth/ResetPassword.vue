@@ -54,8 +54,8 @@ const props = defineProps({
   email: String,
 })
 const initForm = {
-  token: null,
-  email: null,
+  token: props.token,
+  email: props.email,
   password: null,
   password_confirmation: null,
 }
@@ -63,8 +63,8 @@ const initForm = {
 const form = useForm(initForm)
 
 function onSend() {
-  form.token = props.token
-  form.email = props.email
+  //form.token = props.token
+  //form.email = props.email
   form.post(route('password.update'), {})
 }
 </script>
