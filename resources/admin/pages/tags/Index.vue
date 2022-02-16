@@ -1,8 +1,13 @@
 <template>
   <app-layout>
     <div class="q-pa-md">
-      <div class="mb-4 text-right">
-        <q-btn color="primary" label="Create" @click="createDialog" />
+      <div class="head-buttons">
+        <div class="q-pa-md" style="width: 350px">
+          <Filter @send="onFilterSend" />
+        </div>
+        <div class="q-pa-md text-right">
+          <q-btn color="primary" label="Create" @click="createDialog" />
+        </div>
       </div>
 
       <q-table
@@ -46,7 +51,7 @@
       <div class="q-pa-lg flex flex-center">
         <q-pagination
           v-model="pagination.page"
-          :max="pagesCount"
+          :max="pagination.pagesCount"
           direction-links
           boundary-links
           :max-pages="5"
@@ -61,12 +66,13 @@
 </template>
 <script lang="ts" setup>
 import { Col } from '@admin/types/data-table'
-import { shorten } from '@admin/functions'
-import { ref } from 'vue'
+import { shorten, getPageCount } from '@admin/functions'
+import { ref, onUpdated } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 import { useQuasar } from 'quasar'
 import { Inertia } from '@inertiajs/inertia'
 
+import Filter from './Filter.vue'
 import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
 const $q = useQuasar()
@@ -123,9 +129,10 @@ const pagination = ref({
   page: props.currentPage!,
   rowsPerPage: props.perPage,
   rowsNumber: props.total,
+  pagesCount: getPageCount(props.total, props.perPage),
 })
 
-const paginateForm = useForm({
+const queryForm = useForm({
   page: props.currentPage,
   perPage: props.perPage,
   sortBy: props.sortBy,
@@ -133,13 +140,18 @@ const paginateForm = useForm({
   filter: {},
 })
 
+onUpdated(() => {
+  pagination.value.pagesCount = getPageCount(props.total, props.perPage)
+})
+
 const loading = ref(false)
 const createDialRef = ref()
 const editDialRef = ref()
 
-let totalCount = props.total!
-let pageSize = props.perPage!
-let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
+function onFilterSend(form) {
+  queryForm.filter = form.data()
+  doQuery()
+}
 
 function createDialog() {
   createDialRef.value.reset()
@@ -188,7 +200,7 @@ function deleteRow(params) {
 function onPagination(page: string) {
   let curPage = parseInt(page)
   pagination.value.page = curPage
-  paginateForm.page = curPage
+  queryForm.page = curPage
   doQuery()
 }
 
@@ -199,16 +211,16 @@ function onSort(params) {
 
   if (sortBy) {
     pagination.value.sortBy = sortBy
-    paginateForm.sortBy = sortBy
+    queryForm.sortBy = sortBy
   }
 
-  paginateForm.descending = pagination.value.descending ? 1 : 0
+  queryForm.descending = pagination.value.descending ? 1 : 0
   doQuery()
 }
 
 const doQuery = () => {
   loading.value = true
-  paginateForm.get(location.pathname, {
+  queryForm.get(location.pathname, {
     preserveState: true,
     onSuccess: () => {
       loading.value = false

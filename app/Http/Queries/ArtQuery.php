@@ -22,11 +22,9 @@ class ArtQuery extends BaseQuery
             ->with('media')
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'email'])),
-                AllowedFilter::partial('name'),
-                AllowedFilter::partial('email'),
+                AllowedFilter::partial('title'),
+                AllowedFilter::partial('description'),
                 AllowedFilter::exact('id'),
-                AllowedFilter::exact('role'),
-                AllowedFilter::exact('active'),
             ])
             ->orderBy($sort, $direction)
         ;

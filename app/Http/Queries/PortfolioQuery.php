@@ -29,6 +29,7 @@ class PortfolioQuery extends BaseQuery
             ->allowedFilters([
                 AllowedFilter::custom('q', new GlobalSearchFilter(['name'])),
                 AllowedFilter::partial('name'),
+                AllowedFilter::partial('order_number'),
                 AllowedFilter::exact('id'),
             ])
             ->orderBy($sort, $direction)

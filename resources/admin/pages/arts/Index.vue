@@ -1,8 +1,13 @@
 <template>
   <app-layout>
     <div class="q-pa-md">
-      <div class="mb-4 text-right">
-        <q-btn color="primary" label="Create" @click="createDialog" />
+      <div class="head-buttons">
+        <div class="q-pa-md" style="width: 350px">
+          <Filter @send="onFilterSend" />
+        </div>
+        <div class="q-pa-md text-right">
+          <q-btn color="primary" label="Create" @click="createDialog" />
+        </div>
       </div>
 
       <q-table
@@ -46,7 +51,7 @@
       <div class="q-pa-lg flex flex-center">
         <q-pagination
           v-model="pagination.page"
-          :max="pagesCount"
+          :max="pagination.pagesCount"
           direction-links
           boundary-links
           :max-pages="5"
@@ -62,8 +67,9 @@
 
 <script lang="ts" setup>
 import { Col } from '@admin/types/data-table'
-import { shorten } from '@admin/functions'
-import { ref } from 'vue'
+import Filter from './Filter.vue'
+import { shorten, getPageCount } from '@admin/functions'
+import { ref, onUpdated } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 import { useQuasar } from 'quasar'
 
@@ -133,24 +139,24 @@ const pagination = ref({
   page: props.currentPage!,
   rowsPerPage: props.perPage,
   rowsNumber: props.total,
+  pagesCount: getPageCount(props.total, props.perPage),
 })
 
-const form = useForm({
+const queryForm = useForm({
   page: props.currentPage,
   perPage: props.perPage,
   sortBy: props.sortBy,
   descending: 0,
   filter: {},
 })
+onUpdated(() => {
+  pagination.value.pagesCount = getPageCount(props.total, props.perPage)
+})
 
 const createDialRef = ref()
 const editDialRef = ref()
 
 const loading = ref(false)
-
-let totalCount = props.total!
-let pageSize = props.perPage!
-let pagesCount = totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
 function createDialog() {
   createDialRef.value.reset()
@@ -164,21 +170,6 @@ function editRow(params) {
   editDialRef.value.show()
 }
 
-/* async function editRow(params) { */
-/*   let { row } = params */
-/*   showEditDialog.value = true */
-/*   rowForm.title = row.title */
-/*   rowForm.description = row.description */
-/*   rowForm.id = row.id */
-/*   rowForm.files = [] */
-
-/*   for (const image of row.media) { */
-/*     let response = await fetch(image.original_url) */
-/*     let data = await response.blob() */
-/*     let file = new File([data], image.name, {}) */
-/*     rowForm.files.push(file) */
-/*   } */
-/* } */
 function createSendHandler(form) {
   form.post(currentUrl, {
     onSuccess: () => {
@@ -212,10 +203,15 @@ function deleteRow(params) {
   })
 }
 
+function onFilterSend(form) {
+  queryForm.filter = form.data()
+  doQuery()
+}
+
 function onPagination(page: string) {
   let curPage = parseInt(page)
   pagination.value.page = curPage
-  form.page = curPage
+  queryForm.page = curPage
   doQuery()
 }
 
@@ -226,16 +222,16 @@ function onSort(params) {
 
   if (sortBy) {
     pagination.value.sortBy = sortBy
-    form.sortBy = sortBy
+    queryForm.sortBy = sortBy
   }
 
-  form.descending = pagination.value.descending ? 1 : 0
+  queryForm.descending = pagination.value.descending ? 1 : 0
   doQuery()
 }
 
 const doQuery = () => {
   loading.value = true
-  form.get(location.pathname, {
+  queryForm.get(location.pathname, {
     preserveState: true,
     onSuccess: () => {
       loading.value = false
