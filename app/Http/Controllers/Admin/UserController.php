@@ -23,8 +23,8 @@ class UserController extends Controller
     #[Get('/', name: 'users')]
     public function index(UserQuery $query)
     {
+        /* $t = collect($rolesArr)->flatMap(function ($k, $v) { return [['label' => $k, 'value' => $v]]; })->all(); */
 
-        /* $t = collect($rolesArr)->flatMap( function($k,$v)  { return  [[ 'label' => $k, 'value'=>$v]] ; } )->all(); */
         return $query->paginateOrExport(
             fn ($data) => Inertia::render('users/Index', $data)
         );

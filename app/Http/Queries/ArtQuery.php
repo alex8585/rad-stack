@@ -16,6 +16,7 @@ class ArtQuery extends BaseQuery
 
     public function __construct()
     {
+        $this->resource = 'arts';
         $direction = request()->get('descending', 0) ? 'ASC' : 'DESC';
         $sort = request()->get('sortBy', 'id');
 
@@ -30,7 +31,6 @@ class ArtQuery extends BaseQuery
             ])
             ->orderBy($sort, $direction)
         ;
-        $this->resource = 'arts';
     }
 
     public function collection(): AnonymousResourceCollection
@@ -40,14 +40,15 @@ class ArtQuery extends BaseQuery
 
     public function get(): array
     {
-        /* dd($this->collection()); */
+        $resCollection = $this->collection();
+
         return [
             'sortBy' => request()->get('sort', 'id'),
             'filter' => request()->get('filter'),
-            'items' => $this->collection()->items(),
-            'perPage' => (int) $this->collection()->perPage(),
-            'currentPage' => (int) $this->collection()->currentPage(),
-            'total' => (int) $this->collection()->total(),
+            'items' => $resCollection->items(),
+            'perPage' => (int) $resCollection->perPage(),
+            'currentPage' => (int) $resCollection->currentPage(),
+            'total' => (int) $resCollection->total(),
         ];
     }
 }

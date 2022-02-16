@@ -17,9 +17,15 @@ class GlobalScoutSearch implements Filter
     public function __invoke(Builder $query, $value, string $property)
     {
         if ($value) {
-            $idS = $this->modelClass::search($value)->get()->pluck('id');
+            /* $idS = $this->modelClass::search($value)->get()->pluck('id'); */
+            $rawScout = $this->modelClass::search($value)->raw();
+            if ($rawScout['hits']) {
+                $idS = collect($rawScout['hits'])->pluck('id')->toArray();
 
-            return $query->whereIn('id', $idS);
+                return $query->whereIn('id', $idS);
+            }
+
+            return $query->whereRaw('0 = 1');
         }
 
         return $query;

@@ -52,13 +52,15 @@ class PortfolioQuery extends BaseQuery
 
     public function get(): array
     {
+        $resCollection = $this->collection();
+
         return [
             'sortBy' => request()->get('sort', 'id'),
             'filter' => request()->get('filter'),
-            'items' => $this->collection()->items(),
-            'perPage' => (int) $this->collection()->perPage(),
-            'currentPage' => (int) $this->collection()->currentPage(),
-            'total' => (int) $this->collection()->total(),
+            'items' => $resCollection->items(),
+            'perPage' => (int) $resCollection->perPage(),
+            'currentPage' => (int) $resCollection->currentPage(),
+            'total' => (int) $resCollection->total(),
         ];
     }
 }
