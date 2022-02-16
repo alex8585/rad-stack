@@ -5,6 +5,17 @@
         <div class="q-pa-md" style="width: 350px">
           <Filter @send="onFilterSend" />
         </div>
+        <div>
+          <q-input
+            v-model="queryForm.filter.q"
+            label="Search"
+            @keyup.enter="onSearch"
+          >
+            <template #append>
+              <q-icon name="search" class="cursor-pointer" @click="onSearch" />
+            </template>
+          </q-input>
+        </div>
         <div class="q-pa-md text-right">
           <q-btn color="primary" label="Create" @click="createDialog" />
         </div>
@@ -162,7 +173,7 @@ const queryForm = useForm({
   perPage: props.perPage,
   sortBy: props.sortBy,
   descending: 0,
-  filter: {},
+  filter: { q: null },
 })
 
 onUpdated(() => {
@@ -227,7 +238,9 @@ function onPagination(page: string) {
   queryForm.page = curPage
   doQuery()
 }
-
+function onSearch() {
+  doQuery()
+}
 function onSort(params) {
   const { sortBy } = params.pagination
 

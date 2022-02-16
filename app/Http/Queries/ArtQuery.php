@@ -21,7 +21,7 @@ class ArtQuery extends BaseQuery
         $this->query = QueryBuilder::for(Art::class)
             ->with('media')
             ->allowedFilters([
-                AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'email'])),
+                AllowedFilter::custom('q', new GlobalSearchFilter(['title', 'description'])),
                 AllowedFilter::partial('title'),
                 AllowedFilter::partial('description'),
                 AllowedFilter::exact('id'),

@@ -17,14 +17,14 @@ const mainNav: (NavLink | NavTitle)[] = [
     href: route('admin.dashboard'),
     active: () => route().current('admin.dashboard'),
     icon: 'chart-bar',
-    newicon: 'record_voice_over',
+    newicon: 'dashboard',
     text: __('Dashboard'),
   },
   {
     href: route('admin.arts'),
     active: () => route().current('admin.arts'),
     icon: 'chart-bar',
-    newicon: 'school',
+    newicon: 'collections',
     text: __('Arts'),
   },
   // { title: __('Content Managment') },
@@ -35,7 +35,7 @@ const mainNav: (NavLink | NavTitle)[] = [
       route().current('admin.portfolios.*'),
     icon: 'portrait',
 
-    newicon: 'portrait',
+    newicon: 'library_books',
     text: __('Portfolios'),
   },
 
@@ -45,7 +45,7 @@ const mainNav: (NavLink | NavTitle)[] = [
       route().current('admin.tags') || route().current('admin.tags.*'),
     icon: 'newspaper',
 
-    newicon: 'code',
+    newicon: 'local_offer',
     text: __('Tags'),
   },
   // { title: __('Access Managment') },
@@ -54,7 +54,7 @@ const mainNav: (NavLink | NavTitle)[] = [
     active: () =>
       route().current('admin.users') || route().current('admin.users.*'),
     icon: 'users',
-    newicon: 'chat',
+    newicon: 'people',
     text: __('Users'),
   },
 ]

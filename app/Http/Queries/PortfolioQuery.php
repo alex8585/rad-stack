@@ -27,7 +27,7 @@ class PortfolioQuery extends BaseQuery
         $query = QueryBuilder::for(Portfolio::class)
             ->with(['media', 'tags'])
             ->allowedFilters([
-                AllowedFilter::custom('q', new GlobalSearchFilter(['name'])),
+                AllowedFilter::custom('q', new GlobalSearchFilter(['name', 'url'])),
                 AllowedFilter::partial('name'),
                 AllowedFilter::partial('order_number'),
                 AllowedFilter::exact('id'),
