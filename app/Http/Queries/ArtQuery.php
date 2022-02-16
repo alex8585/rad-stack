@@ -4,6 +4,7 @@ namespace App\Http\Queries;
 
 use App\Http\Resources\Admin\ArtResource;
 use App\Models\Art;
+use App\Support\GlobalScoutSearch;
 use App\Support\GlobalSearchFilter;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -21,7 +22,8 @@ class ArtQuery extends BaseQuery
         $this->query = QueryBuilder::for(Art::class)
             ->with('media')
             ->allowedFilters([
-                AllowedFilter::custom('q', new GlobalSearchFilter(['title', 'description'])),
+                AllowedFilter::custom('q', new GlobalScoutSearch(Art::class)),
+                /* AllowedFilter::custom('q', new GlobalSearchFilter(['title', 'description'])), */
                 AllowedFilter::partial('title'),
                 AllowedFilter::partial('description'),
                 AllowedFilter::exact('id'),

@@ -23,3 +23,5 @@ _ide_helper.php
 /tags.lock
 /tags.temp
 /.undodir
+/data.ms
+/meilisearch
