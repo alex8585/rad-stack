@@ -101,6 +101,9 @@ import { Inertia } from '@inertiajs/inertia'
 import Filter from './Filter.vue'
 import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
+import { useTitle } from '@admin/features/helpers'
+useTitle('Users')
+
 const $q = useQuasar()
 
 const currentUrl = route(route().current())
@@ -184,7 +187,7 @@ const queryForm = useForm({
   perPage: props.perPage,
   sortBy: props.sortBy,
   descending: 0,
-  filter: {q:null},
+  filter: { q: null },
 })
 
 const loading = ref(false)

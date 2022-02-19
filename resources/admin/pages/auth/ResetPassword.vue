@@ -1,18 +1,8 @@
 <template>
   <auth-layout>
+    <h4 style="text-align: center">Reset password</h4>
     <q-form class="q-gutter-md">
       <q-list>
-        <!-- <q-item> -->
-        <!--   <q-item-section> -->
-        <!--     <q-item-label class="q-pb-xs"> Email </q-item-label> -->
-        <!--     <q-input -->
-        <!--       v-model="form.email" -->
-        <!--       :error-message="form.errors.email" -->
-        <!--       :error="!!form.errors.email" -->
-        <!--       filled -->
-        <!--     /> -->
-        <!--   </q-item-section> -->
-        <!-- </q-item> -->
         <q-item>
           <q-item-section>
             <q-item-label class="q-pb-xs">Password</q-item-label>
@@ -49,6 +39,9 @@
 
 <script lang="ts" setup>
 import { useForm } from '@inertiajs/inertia-vue3'
+import { useTitle } from '@admin/features/helpers'
+useTitle('Reset password')
+
 const props = defineProps({
   token: String,
   email: String,

@@ -1,5 +1,6 @@
 <template>
   <auth-layout>
+    <h4 style="text-align: center">Login</h4>
     <q-form class="q-gutter-md">
       <q-list>
         <q-item>
@@ -39,6 +40,8 @@
 <script lang="ts" setup>
 import { useForm } from '@inertiajs/inertia-vue3'
 
+import { useTitle } from '@admin/features/helpers'
+useTitle('Login')
 defineProps({
   canRegister: Boolean,
   status: String,

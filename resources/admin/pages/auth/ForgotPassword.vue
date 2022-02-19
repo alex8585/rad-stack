@@ -1,5 +1,6 @@
 <template>
   <auth-layout>
+    <h4 style="text-align: center">Forgot password</h4>
     <div class="mb-4 text-sm text-gray-600">
       {{
         $t(
@@ -33,6 +34,8 @@
 
 <script lang="ts" setup>
 import { useForm } from '@inertiajs/inertia-vue3'
+import { useTitle } from '@admin/features/helpers'
+useTitle('Forgot password')
 defineProps({
   status: String,
 })

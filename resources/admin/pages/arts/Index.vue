@@ -87,6 +87,8 @@ import { useQuasar } from 'quasar'
 import { Inertia } from '@inertiajs/inertia'
 import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
+import { useTitle } from '@admin/features/helpers'
+useTitle('Arts')
 
 const currentUrl = route(route().current())
 const $q = useQuasar()

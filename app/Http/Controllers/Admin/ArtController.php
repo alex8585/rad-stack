@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Queries\ArtQuery;
-use App\Http\Queries\UserQuery;
 use App\Http\Requests\Admin\ArtStoreRequest;
 use App\Http\Requests\Admin\ArtUpdateRequest;
 use App\Models\Art;
@@ -23,25 +22,6 @@ class ArtController extends Controller
         return $artQuery->paginateOrExport(
             fn ($data) => Inertia::render('arts/Index', ['action' => 'list'] + $data)
         );
-
-        /* $data = Art::paginate(5)->toArray(); */
-
-        /* return Inertia::render( */
-        /*     'arts/Index', */
-        /*     [ */
-        /*         'action' => 'list', */
-        /*         'items' => $data['data'], */
-        /*     ] */
-        /* ); */
-
-        /* return app(UserQuery::class)->make() */
-        /*     ->paginateOrExport(fn ($data) => Inertia::render('users/Index', ['action' => 'list'] + $data)) */
-        /* ; */
-    }
-
-    #[Get('{art}', name: 'art.show')]
-    public function show()
-    {
     }
 
     #[Post('/', name: 'arts.store')]
