@@ -62,7 +62,7 @@
       <div class="q-pa-lg flex flex-center">
         <q-pagination
           v-model="pagination.page"
-          :max="pagination.pagesCount"
+          :max="pagesCount"
           direction-links
           boundary-links
           :max-pages="5"
@@ -79,11 +79,12 @@
 <script lang="ts" setup>
 import { Col } from '@admin/types/data-table'
 import Filter from './Filter.vue'
-import { shorten, getPageCount } from '@admin/functions'
-import { ref, onUpdated } from 'vue'
+import { shorten } from '@admin/functions'
+import { ref } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 import { useQuasar } from 'quasar'
 
+import { usePages } from '../../composables/pages'
 import { Inertia } from '@inertiajs/inertia'
 import CreateDialog from './CreateDialog.vue'
 import EditDialog from './EditDialog.vue'
@@ -146,13 +147,13 @@ const columns: Array<Col> = [
   },
 ]
 
+const pagesCount = usePages(props)
 const pagination = ref({
   sortBy: 'id',
   descending: false,
   page: props.currentPage!,
   rowsPerPage: props.perPage,
   rowsNumber: props.total,
-  pagesCount: getPageCount(props.total, props.perPage),
 })
 
 const queryForm = useForm({
@@ -163,9 +164,6 @@ const queryForm = useForm({
   filter: {
     q: null,
   },
-})
-onUpdated(() => {
-  pagination.value.pagesCount = getPageCount(props.total, props.perPage)
 })
 
 const createDialRef = ref()

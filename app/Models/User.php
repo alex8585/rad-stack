@@ -12,8 +12,9 @@ use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-/**
+/*
  * App\Models\User.
  *
  * @property int                                                         $id
@@ -53,7 +54,8 @@ use Illuminate\Support\Facades\Hash;
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use Notifiable;
@@ -93,6 +95,16 @@ class User extends Authenticatable
         'role' => RoleEnum::class,
         'last_login_at' => 'datetime',
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     public function setPasswordAttribute($password)
     {

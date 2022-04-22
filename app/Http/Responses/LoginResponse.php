@@ -37,6 +37,8 @@ class LoginResponse implements LoginResponseContract
             return Inertia::location(route('home'));
         }
 
+        /* dd($this->user); */
+
         return redirect()->intended(route('admin.dashboard'));
     }
 }

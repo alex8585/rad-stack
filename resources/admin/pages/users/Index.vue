@@ -69,7 +69,7 @@
       <div class="q-pa-lg flex flex-center">
         <q-pagination
           v-model="pagination.page"
-          :max="pagination.pagesCount"
+          :max="pagesCount"
           direction-links
           boundary-links
           :max-pages="5"
@@ -92,11 +92,12 @@
 </template>
 <script lang="ts" setup>
 import { Col } from '@admin/types/data-table'
-import { shorten, getPageCount } from '@admin/functions'
+import { shorten } from '@admin/functions'
 import { ref, onUpdated } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 import { useQuasar } from 'quasar'
 import { Inertia } from '@inertiajs/inertia'
+import { usePages } from '../../composables/pages'
 
 import Filter from './Filter.vue'
 import CreateDialog from './CreateDialog.vue'
@@ -168,18 +169,17 @@ const columns: Array<Col> = [
     align: 'center',
   },
 ]
-
 const pagination = ref({
   sortBy: 'id',
   descending: false,
   page: props.currentPage!,
   rowsPerPage: props.perPage,
   rowsNumber: props.total,
-  pagesCount: getPageCount(props.total, props.perPage),
 })
 
+const pagesCount = usePages(props)
 onUpdated(() => {
-  pagination.value.pagesCount = getPageCount(props.total, props.perPage)
+  //console.log(pagination)
 })
 
 const queryForm = useForm({

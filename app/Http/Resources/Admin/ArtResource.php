@@ -22,6 +22,7 @@ class ArtResource extends JsonResource
     public function toArray($request)
     {
         $img = $this->resource->getMedia('images')->first();
+        //dd($img);
 
         $thumb = null;
         if ($img) {

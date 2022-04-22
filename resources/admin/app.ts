@@ -10,7 +10,6 @@ import { InertiaProgress } from '@inertiajs/progress'
 
 import Route from './plugins/route'
 import Translations from './plugins/translations'
-import GlobalComponents from './plugins/global-components'
 import DateFns from './plugins/date-fns'
 import HeroIcons from './plugins/hero-icons'
 import '@quasar/extras/material-icons-round/material-icons-round.css'
@@ -18,6 +17,7 @@ import '@quasar/extras/material-icons-round/material-icons-round.css'
 // Import Quasar css
 import './material-icons/material-icons.css'
 import 'quasar/dist/quasar.css'
+
 import { Quasar, Notify, Dialog } from 'quasar'
 import VueUploadComponent from 'vue-upload-component'
 import { UploadMedia, UpdateMedia } from '@s1modev/media-upload'
@@ -35,7 +35,6 @@ createInertiaApp({
       .use(plugin)
       .use(Route)
       .use(Translations)
-      .use(GlobalComponents)
       .use(DateFns)
       .use(VueAxios, axios)
       .use(Quasar, {

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DestroyUserController;
 use App\Http\Controllers\ImageController;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -43,9 +44,15 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         // Auth specific actions routes...
+
         Route::group(['middleware' => ['web']], function () {
-            Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-                ->middleware(['guest', 'throttle:login'])
+            /* Route::post('/login2', [AuthenticatedSessionController::class, 'store']) */
+            /*     ->middleware(['guest', 'throttle:login']) */
+            /*     ->name('login') */
+            /* ; */
+
+            Route::post('/login', [AuthController::class, 'store'])
+                ->middleware(['guest'])
                 ->name('login')
             ;
 
